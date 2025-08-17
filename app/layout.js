@@ -2,6 +2,8 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 import { Toaster } from 'react-hot-toast';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,9 +29,11 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${playfair.variable} font-inter antialiased`}
     >
         <CartProvider>
+          <Header />
           {children}
+          <Footer />
           <Toaster 
-            position="top-right"
+            position="top-center"
             toastOptions={{
               duration: 4000,
               style: {

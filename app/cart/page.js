@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import CheckoutForm from '../components/CheckoutForm';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
@@ -36,7 +34,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
@@ -249,8 +246,6 @@ export default function CartPage() {
           </div>
         )}
       </div>
-      
-      <Footer />
       
       {/* Checkout Form Modal */}
       <CheckoutForm 

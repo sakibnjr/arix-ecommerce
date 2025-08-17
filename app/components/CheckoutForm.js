@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { HiX, HiUser, HiMail, HiPhone, HiLocationMarker, HiShoppingBag } from 'react-icons/hi';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
 
 export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
   const { items, totalItems, totalPrice, clearCart } = useCart();
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -43,16 +45,19 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
       newErrors.fullName = 'Full name is required';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    // Email is optional; if provided, validate format
+    if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (!/^\+88\s?\d{11}$/.test(formData.phone.replace(/\s+/g, ''))) {
-      newErrors.phone = 'Please enter a valid Bangladesh phone number (+88 01XXXXXXXXX)';
+    } else {
+      const normalized = formData.phone.replace(/\s+/g, '');
+      const isValid = /^01\d{9}$/.test(normalized) || /^\+8801\d{9}$/.test(normalized);
+      if (!isValid) {
+        newErrors.phone = 'Please enter a valid Bangladesh phone number (01XXXXXXXXX or +88 01XXXXXXXXX)';
+      }
     }
 
     if (!formData.address.trim()) {
@@ -87,6 +92,37 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
 
       // Generate order number
       const orderNumber = `ARX${Date.now().toString().slice(-6)}`;
+      const orderRecord = {
+        id: orderNumber,
+        createdAt: new Date().toISOString(),
+        orderType,
+        customer: {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          notes: formData.notes,
+        },
+        items: (items || []).map(i => ({ id: i.id, name: i.name, size: i.size, qty: i.quantity, price: i.price, originalPrice: i.originalPrice, anime: i.anime, category: i.category })),
+        totals: {
+          itemsCount: totalItems || 0,
+          subtotal: totalPrice || 0,
+          shipping: 80,
+          total: (totalPrice || 0) + 80,
+        },
+      };
+
+      // Persist order locally for tracking
+      try {
+        const existingRaw = localStorage.getItem('arix_orders');
+        const existing = existingRaw ? JSON.parse(existingRaw) : [];
+        const updated = [orderRecord, ...existing].slice(0, 50); // keep recent 50
+        localStorage.setItem('arix_orders', JSON.stringify(updated));
+      } catch (_) {
+        // ignore storage errors
+      }
       
       // Success toast
       toast.success(`Order #${orderNumber} submitted successfully!`, {
@@ -101,9 +137,9 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
         );
       }, 1000);
 
-      // Clear cart and close form
+      // Clear cart and navigate to tracking page
       clearCart();
-      onClose();
+      router.push(`/order/${orderNumber}`);
       
       // Reset form
       setFormData({
@@ -194,7 +230,7 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
 
               <div>
                 <label className="block text-body-sm font-medium text-gray-700 mb-2">
-                  Email Address *
+                  Email Address (optional)
                 </label>
                 <div className="relative">
                   <HiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -206,7 +242,7 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors bg-white text-gray-900 ${
                       errors.email ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="your.email@example.com"
+                    placeholder="your.email@example.com (optional)"
                   />
                 </div>
                 {errors.email && (
@@ -228,7 +264,7 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors bg-white text-gray-900 ${
                       errors.phone ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="+88 01XXXXXXXXX"
+                    placeholder="01XXXXXXXXX"
                   />
                 </div>
                 {errors.phone && (

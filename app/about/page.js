@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../components/Header';
 import Link from 'next/link';
 import { HiChevronRight, HiStar, HiHeart, HiShieldCheck, HiUsers, HiGlobe, HiLightningBolt, HiSparkles } from 'react-icons/hi';
 
@@ -28,7 +27,6 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">

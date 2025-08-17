@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import Link from 'next/link';
 import { sampleProducts } from '../data/sampleProducts';
@@ -71,7 +69,6 @@ export default function AllProductsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
@@ -119,17 +116,7 @@ export default function AllProductsPage() {
           {/* Desktop Filters */}
           <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
             <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search Filter */}
-              <div className="lg:w-64">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900"
-                />
-              </div>
+              {/* Search removed: search is available from Header */}
               
               {/* Category Filter */}
               <div>
@@ -237,7 +224,6 @@ export default function AllProductsPage() {
 
       </div>
       
-      <Footer />
     </div>
   );
 }

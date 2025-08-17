@@ -2,11 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
 import { motion } from 'framer-motion';
+import { useCart } from '../context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const { addToCart } = useCart();
 
   const {
     id,
@@ -87,8 +92,7 @@ export default function ProductCard({ product }) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                // Quick view logic - could open product details in modal
-                window.location.href = `/product/${id}`;
+                router.push(`/product/${id}`);
               }}
               className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors"
               title="Quick View"
@@ -136,8 +140,9 @@ export default function ProductCard({ product }) {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            // Redirect to product detail page for size selection
-            window.location.href = `/product/${id}`;
+            const defaultSize = (product.sizes && product.sizes[0]) || 'M';
+            addToCart(product, defaultSize, 1);
+            toast.success(`Added 1 × ${name} (${defaultSize}) to cart`);
           }}
           className="w-full bg-black text-white py-3 px-5 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 tracking-wide text-body-sm"
         >

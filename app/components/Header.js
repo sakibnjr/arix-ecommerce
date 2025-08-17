@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { HiSearch, HiShoppingCart, HiMenu, HiX } from 'react-icons/hi';
 import { useCart } from '../context/CartContext';
 import { sampleProducts } from '../data/sampleProducts';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,10 +28,9 @@ export default function Header() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      // Redirect to products page with search query
-      window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`;
-    }
+    if (!searchQuery.trim()) return;
+    router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    setIsSearchOpen(false);
   };
 
   const filteredProducts = searchQuery.trim() 

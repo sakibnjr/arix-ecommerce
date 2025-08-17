@@ -1,4 +1,3 @@
-import Header from '../components/Header';
 import Link from 'next/link';
 import { HiChevronRight } from 'react-icons/hi';
 import { AiOutlineMail, AiOutlinePhone, AiOutlineEnvironment, AiOutlineClockCircle, AiOutlineMessage } from 'react-icons/ai';
@@ -36,7 +35,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">

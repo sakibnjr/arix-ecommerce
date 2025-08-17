@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import Link from 'next/link';
 import { sampleProducts } from '../data/sampleProducts';
@@ -58,7 +56,6 @@ export default function OnSalePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
@@ -218,7 +215,6 @@ export default function OnSalePage() {
         </div>
       </div>
       
-      <Footer />
     </div>
   );
 }
