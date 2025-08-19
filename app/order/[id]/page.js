@@ -10,16 +10,26 @@ export default function OrderTrackingPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('arix_orders');
-      const list = raw ? JSON.parse(raw) : [];
-      const found = list.find((o) => o.id === id) || null;
-      setOrder(found);
-    } catch (_) {
-      setOrder(null);
-    } finally {
-      setLoaded(true);
-    }
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/orders/${id}`);
+        if (!res.ok) throw new Error('not found');
+        const data = await res.json();
+        if (active) setOrder(data.order);
+      } catch (_) {
+        // fallback to local record if exists
+        try {
+          const raw = localStorage.getItem('arix_orders');
+          const list = raw ? JSON.parse(raw) : [];
+          const found = list.find((o) => o.id === id) || null;
+          if (active) setOrder(found);
+        } catch (_) {}
+      } finally {
+        if (active) setLoaded(true);
+      }
+    })();
+    return () => { active = false; };
   }, [id]);
 
   return (

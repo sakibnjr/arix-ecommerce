@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import Link from 'next/link';
-import { sampleProducts } from '../data/sampleProducts';
 import { HiChevronRight, HiFilter, HiX } from 'react-icons/hi';
 
 export default function NewArrivalsPage() {
@@ -12,11 +11,29 @@ export default function NewArrivalsPage() {
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Filter products by isNew = true
-  const newProducts = sampleProducts.filter(product => product.isNew);
+  const [newProducts, setNewProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch new products
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products?isNew=true`);
+        const data = await res.json();
+        if (active) setNewProducts(data.items || []);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+  }, []);
 
   // Get unique categories and anime series from new products
-  const categories = [...new Set(newProducts.map(p => p.category))];
+  const categoryValues = [...new Set(newProducts.map(p => p.category))];
+  const categories = categoryValues.map(value => ({
+    value,
+    label: value === 'normal' ? 'Classic' : value === 'drop-shoulder' ? 'Drop Shoulder' : value
+  }));
   const animeList = [...new Set(newProducts.map(p => p.anime))];
 
   // Apply additional filters
@@ -109,7 +126,7 @@ export default function NewArrivalsPage() {
                 >
                   <option value="all">All Categories</option>
                   {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                    <option key={category.value} value={category.value}>{category.label}</option>
                   ))}
                 </select>
               </div>
@@ -171,10 +188,16 @@ export default function NewArrivalsPage() {
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : sortedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id || product.id} product={product} />
             ))}
           </div>
         ) : (

@@ -1,10 +1,17 @@
-import { sampleProducts } from '../../data/sampleProducts';
+import { use } from 'react';
 import Link from 'next/link';
 import ProductDetailsClient from './ProductDetailsClient';
 
 export default function ProductDetailsPage({ params }) {
-  const productId = parseInt(params.id, 10);
-  const product = sampleProducts.find(p => p.id === productId);
+  const { id } = use(params);
+  // server fetch product by id
+  // Note: API uses Mongo IDs; fallback to numeric id if present
+  // We'll fetch directly from API using fetch in server component
+  // Next.js supports Request in server components
+  // eslint-disable-next-line no-undef
+  const res = use(fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products/${id}`, { cache: 'no-store' }));
+  const data = use(res.json());
+  const product = data?.item || null;
 
   if (!product) {
     return (
@@ -31,5 +38,5 @@ export default function ProductDetailsPage({ params }) {
 
 // Pre-generate static routes for better perf and prefetch
 export function generateStaticParams() {
-  return sampleProducts.map((p) => ({ id: String(p.id) }));
+  return [];
 }

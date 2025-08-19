@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import Link from 'next/link';
-import { sampleProducts } from '../data/sampleProducts';
 import { HiChevronRight, HiFilter, HiX } from 'react-icons/hi';
 
 export default function AllProductsPage() {
@@ -29,12 +28,32 @@ export default function AllProductsPage() {
     }
   }, []);
 
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`);
+        const data = await res.json();
+        if (active) setAllProducts(data.items || []);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+  }, []);
+
   // Get unique categories and anime series
-  const categories = [...new Set(sampleProducts.map(p => p.category))];
-  const animeList = [...new Set(sampleProducts.map(p => p.anime))];
+  const categoryValues = [...new Set(allProducts.map(p => p.category))];
+  const categories = categoryValues.map(value => ({
+    value,
+    label: value === 'normal' ? 'Classic' : value === 'drop-shoulder' ? 'Drop Shoulder' : value
+  }));
+  const animeList = [...new Set(allProducts.map(p => p.anime))];
 
   // Filter products
-  const filteredProducts = sampleProducts.filter(product => {
+  const filteredProducts = allProducts.filter(product => {
     const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
     const animeMatch = selectedAnime === 'all' || product.anime === selectedAnime;
     const searchMatch = !searchQuery || 
@@ -128,7 +147,7 @@ export default function AllProductsPage() {
                 >
                   <option value="all">All Categories</option>
                   {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                    <option key={category.value} value={category.value}>{category.label}</option>
                   ))}
                 </select>
               </div>
@@ -182,7 +201,7 @@ export default function AllProductsPage() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-600">
-            Showing {sortedProducts.length} of {sampleProducts.length} products
+            Showing {sortedProducts.length} of {allProducts.length} products
             {searchQuery && ` matching "${searchQuery}"`}
             {selectedCategory !== 'all' && ` in ${selectedCategory}`}
             {selectedAnime !== 'all' && ` from ${selectedAnime}`}
@@ -190,10 +209,16 @@ export default function AllProductsPage() {
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : sortedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id || product.id} product={product} />
             ))}
           </div>
         ) : (

@@ -1,9 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { sampleProducts } from '../data/sampleProducts';
-import Header from './Header';
-import Footer from './Footer';
+import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import Link from 'next/link';
 import { HiChevronRight, HiAdjustments } from 'react-icons/hi';
@@ -17,18 +14,29 @@ export default function AnimeCategoryPage({
 }) {
   const [sortBy, setSortBy] = useState('featured');
   const [filterBy, setFilterBy] = useState('all');
+  const [animeProducts, setAnimeProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Filter products by anime name
-  const animeProducts = sampleProducts.filter(product => 
-    product.anime.toLowerCase() === animeName.toLowerCase()
-  );
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products?anime=${encodeURIComponent(animeName)}`);
+        const data = await res.json();
+        if (active) setAnimeProducts(data.items || []);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [animeName]);
 
   // Apply additional filters
   let filteredProducts = animeProducts;
   if (filterBy === 'normal') {
-    filteredProducts = animeProducts.filter(product => product.category === 'Normal T-Shirt');
+    filteredProducts = animeProducts.filter(product => product.category === 'normal');
   } else if (filterBy === 'drop-shoulder') {
-    filteredProducts = animeProducts.filter(product => product.category === 'Drop Shoulder');
+    filteredProducts = animeProducts.filter(product => product.category === 'drop-shoulder');
   }
 
   // Apply sorting
@@ -55,8 +63,6 @@ export default function AnimeCategoryPage({
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-      
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,8 +112,8 @@ export default function AnimeCategoryPage({
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black bg-white text-gray-900"
               >
                 <option value="all">All Products</option>
-                <option value="normal">Normal T-Shirts</option>
-                <option value="drop-shoulder">Drop Shoulder</option>
+                              <option value="normal">Classic</option>
+              <option value="drop-shoulder">Drop Shoulder</option>
               </select>
             </div>
           </div>
@@ -136,10 +142,16 @@ export default function AnimeCategoryPage({
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : sortedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id || product.id} product={product} />
             ))}
           </div>
         ) : (
@@ -165,8 +177,6 @@ export default function AnimeCategoryPage({
           </Link>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 }

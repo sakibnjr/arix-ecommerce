@@ -19,8 +19,9 @@ function cartReducer(state, action) {
   switch (action.type) {
     case CART_ACTIONS.ADD_ITEM: {
       const { product, size, quantity = 1 } = action.payload;
+      const productId = product._id || product.id;
       const existingItemIndex = state.items.findIndex(
-        item => item.id === product.id && item.size === size
+        item => item.id === productId && item.size === size
       );
 
       if (existingItemIndex > -1) {
@@ -39,11 +40,11 @@ function cartReducer(state, action) {
       } else {
         // Add new item
         const newItem = {
-          id: product.id,
+          id: productId,
           name: product.name,
           price: product.price,
           originalPrice: product.originalPrice,
-          image: product.image,
+          image: product.images?.front || product.image, // Use front image or fallback to old image field
           anime: product.anime,
           category: product.category,
           size,

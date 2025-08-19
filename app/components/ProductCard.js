@@ -7,6 +7,7 @@ import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
+import { formatCategoryLabel } from '../utils/categoryFormatter';
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -14,17 +15,30 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
   const {
+    _id,
     id,
     name,
     price,
     originalPrice,
-    image,
-    hoverImage,
+    images,
     anime,
     category,
     isNew = false,
     discount = null
   } = product;
+
+  // Extract images for display (front as main, back as hover)
+  const frontImage = images?.front;
+  const backImage = images?.back;
+
+  // Use _id from MongoDB or fallback to id for compatibility
+  const productId = _id || id;
+
+  // Don't render if no valid product ID
+  if (!productId) {
+    console.warn('ProductCard: Missing product ID', product);
+    return null;
+  }
 
   const discountPercentage = originalPrice && price 
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
@@ -39,7 +53,7 @@ export default function ProductCard({ product }) {
       className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col h-full"
     >
       {/* Clickable Link Area */}
-      <Link href={`/product/${id}`} className="block flex-1">
+      <Link href={`/product/${productId}`} className="block flex-1">
         {/* Image Container */}
         <div 
           className="relative aspect-square overflow-hidden bg-gray-100"
@@ -48,25 +62,32 @@ export default function ProductCard({ product }) {
         >
           {/* Main Image */}
           <div className="relative w-full h-full">
-            <div className="w-full h-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <AiFillStar className="w-16 h-16 mx-auto mb-2" />
-                <p className="text-sm font-medium">{name}</p>
+            {frontImage ? (
+              <img
+                src={frontImage}
+                alt={name}
+                className="w-full h-full object-cover object-center"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <AiFillStar className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm font-medium">{name}</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Hover Image (if available) */}
-          {hoverImage && (
+          {/* Hover Image (back view if available) */}
+          {backImage && (
             <div className={`absolute inset-0 transition-opacity duration-300 ${
               isHovered ? 'opacity-100' : 'opacity-0'
             }`}>
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-purple-100 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <AiFillStar className="w-16 h-16 mx-auto mb-2" />
-                  <p className="text-sm font-medium">Back View</p>
-                </div>
-              </div>
+              <img
+                src={backImage}
+                alt={`${name} - back view`}
+                className="w-full h-full object-cover object-center"
+              />
             </div>
           )}
 
@@ -92,7 +113,7 @@ export default function ProductCard({ product }) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                router.push(`/product/${id}`);
+                router.push(`/product/${productId}`);
               }}
               className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors"
               title="Quick View"
@@ -110,7 +131,7 @@ export default function ProductCard({ product }) {
               {anime}
             </span>
             <span className="text-xs bg-gray-200 text-black px-2 py-1 rounded">
-              {category}
+              {formatCategoryLabel(category)}
             </span>
           </div>
 

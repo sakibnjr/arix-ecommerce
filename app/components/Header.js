@@ -1,18 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { HiSearch, HiShoppingCart, HiMenu, HiX } from 'react-icons/hi';
 import { useCart } from '../context/CartContext';
-import { sampleProducts } from '../data/sampleProducts';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatCategoryLabel } from '../utils/categoryFormatter';
 
 export default function Header() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loadingResults, setLoadingResults] = useState(false);
   const { totalItems } = useCart();
 
   const toggleMenu = () => {
@@ -33,20 +35,30 @@ export default function Header() {
     setIsSearchOpen(false);
   };
 
-  const filteredProducts = searchQuery.trim() 
-    ? sampleProducts.filter(product => 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.anime.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
-
-  // Debug: Log filtered products
-  if (searchQuery.trim()) {
-    console.log('Search Query:', searchQuery);
-    console.log('Filtered Products:', filteredProducts);
-    console.log('Filtered Products Length:', filteredProducts.length);
-  }
+  // Fetch search results from API
+  useEffect(() => {
+    let active = true;
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
+    setLoadingResults(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        const data = await res.json();
+        if (active) setResults(data.items || []);
+      } catch (_) {
+        if (active) setResults([]);
+      } finally {
+        if (active) setLoadingResults(false);
+      }
+    }, 200);
+    return () => {
+      active = false;
+      clearTimeout(t);
+    };
+  }, [searchQuery]);
 
   return (
     <header className="bg-black shadow-md sticky top-0 z-50">
@@ -199,19 +211,21 @@ export default function Header() {
               {searchQuery.trim() && (
                 <div className="p-6">
                   <h4 className="font-display text-heading-md text-gray-900 mb-4">
-                    Quick Results ({filteredProducts.length})
+                    Quick Results ({results.length})
                   </h4>
-                  {filteredProducts.length > 0 ? (
+                  {loadingResults ? (
+                    <div className="text-center py-8 text-gray-600">Searching...</div>
+                  ) : results.length > 0 ? (
                     <div className="space-y-3 overflow-y-auto pr-2">
-                      {filteredProducts.slice(0, 8).map((product, index) => (
+                      {results.slice(0, 8).map((product, index) => (
                         <motion.div
-                          key={product.id}
+                          key={product._id || product.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
                           <Link
-                            href={`/product/${product.id}`}
+                            href={`/product/${product._id || product.id}`}
                             onClick={toggleSearch}
                             className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-200"
                           >
@@ -223,23 +237,23 @@ export default function Header() {
                                 {product.name}
                               </h5>
                               <p className="text-sm text-gray-600">
-                                {product.anime} • {product.category}
+                                {product.anime} • {formatCategoryLabel(product.category)}
                               </p>
                             </div>
                             <div className="text-right">
-                              <span className="font-semibold text-gray-800">৳{product.price.toFixed(2)}</span>
+                              <span className="font-semibold text-gray-800">৳{Number(product.price || 0).toFixed(2)}</span>
                             </div>
                           </Link>
                         </motion.div>
                       ))}
-                      {filteredProducts.length > 8 && (
+                      {results.length > 8 && (
                         <div className="text-center pt-3 border-t border-gray-200 mt-3">
                           <Link
                             href={`/products?search=${encodeURIComponent(searchQuery.trim())}`}
                             onClick={toggleSearch}
                             className="text-sm text-blue-700 hover:text-blue-900 font-medium underline"
                           >
-                            View all {filteredProducts.length} results →
+                            View all {results.length} results →
                           </Link>
                         </div>
                       )}

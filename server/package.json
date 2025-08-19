@@ -1,0 +1,26 @@
+{
+  "name": "arix-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "seed": "node seeds/seed.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "cloudinary": "^2.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "mongoose": "^8.17.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nanoid": "^5.1.5",
+    "zod": "^4.0.17"
+  }
+}

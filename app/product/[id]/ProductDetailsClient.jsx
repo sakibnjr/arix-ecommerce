@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useCart } from '../../context/CartContext';
 import toast from 'react-hot-toast';
+import { formatCategoryLabel } from '../../utils/categoryFormatter';
 
 // Lazy-load heavy modal only when needed
 const CheckoutForm = dynamic(() => import('../../components/CheckoutForm'), {
@@ -52,12 +53,50 @@ export default function ProductDetailsClient({ product }) {
     return product.discount;
   }, [product.originalPrice, product.price, product.discount]);
 
-  const productImages = useMemo(() => [
-    { id: 1, alt: 'Front view', placeholder: 'Main Design' },
-    { id: 2, alt: 'Back view', placeholder: 'Back Design' },
-    { id: 3, alt: 'Detail view', placeholder: 'Design Detail' },
-    { id: 4, alt: 'Model wearing', placeholder: 'Lifestyle Shot' }
-  ], []);
+  const productImages = useMemo(() => {
+    const images = [];
+    
+    // Front view
+    if (product.images?.front) {
+      images.push({ 
+        id: 1, 
+        src: product.images.front, 
+        alt: 'Front view',
+        placeholder: 'Front View'
+      });
+    }
+    
+    // Back view
+    if (product.images?.back) {
+      images.push({ 
+        id: 2, 
+        src: product.images.back, 
+        alt: 'Back view',
+        placeholder: 'Back View'
+      });
+    }
+    
+    // Detail view
+    if (product.images?.detail) {
+      images.push({ 
+        id: 3, 
+        src: product.images.detail, 
+        alt: 'Detail view',
+        placeholder: 'Detail View'
+      });
+    }
+    
+    // If no images available, show placeholders
+    if (images.length === 0) {
+      return [
+        { id: 1, alt: 'Front view', placeholder: 'Front View' },
+        { id: 2, alt: 'Back view', placeholder: 'Back View' },
+        { id: 3, alt: 'Detail view', placeholder: 'Detail View' }
+      ];
+    }
+    
+    return images;
+  }, [product.images]);
 
   const productFeatures = useMemo(() => [
     '100% Cotton blend fabric',
@@ -106,17 +145,25 @@ export default function ProductDetailsClient({ product }) {
           <div>
             {/* Main Image */}
             <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden">
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <StarIcon className="w-24 h-24 mx-auto mb-4" />
-                  <p className="text-lg font-medium">{productImages[activeImageIndex].placeholder}</p>
-                  <p className="text-sm text-gray-500">{product.name}</p>
+              {productImages[activeImageIndex]?.src ? (
+                <img
+                  src={productImages[activeImageIndex].src}
+                  alt={productImages[activeImageIndex].alt}
+                  className="w-full h-full object-cover object-center"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                  <div className="text-center text-gray-600">
+                    <StarIcon className="w-24 h-24 mx-auto mb-4" />
+                    <p className="text-lg font-medium">{productImages[activeImageIndex]?.placeholder || 'No Image'}</p>
+                    <p className="text-sm text-gray-500">{product.name}</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Image Thumbnails */}
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {productImages.map((image, index) => (
                 <button
                   key={image.id}
@@ -125,12 +172,20 @@ export default function ProductDetailsClient({ product }) {
                     index === activeImageIndex ? 'border-black' : 'border-gray-200 hover:border-gray-400'
                   }`}
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <StarIcon className="w-8 h-8 mx-auto mb-1" />
-                      <p className="text-xs">{image.alt}</p>
+                  {image.src ? (
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="w-full h-full object-cover object-center"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <div className="text-center text-gray-500">
+                        <StarIcon className="w-8 h-8 mx-auto mb-1" />
+                        <p className="text-xs">{image.alt}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </button>
               ))}
             </div>
@@ -144,7 +199,7 @@ export default function ProductDetailsClient({ product }) {
                 {product.anime}
               </span>
               <span className="text-sm bg-gray-200 text-black px-3 py-1 rounded">
-                {product.category}
+                {formatCategoryLabel(product.category)}
               </span>
               {product.isNew && (
                 <span className="text-sm bg-green-500 text-white px-3 py-1 rounded font-bold">

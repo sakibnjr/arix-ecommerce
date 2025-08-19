@@ -114,14 +114,58 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
         },
       };
 
-      // Persist order locally for tracking
+      // Send order to backend
       try {
-        const existingRaw = localStorage.getItem('arix_orders');
-        const existing = existingRaw ? JSON.parse(existingRaw) : [];
-        const updated = [orderRecord, ...existing].slice(0, 50); // keep recent 50
-        localStorage.setItem('arix_orders', JSON.stringify(updated));
+        const apiRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderType,
+            customer: {
+              fullName: formData.fullName,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              postalCode: formData.postalCode,
+              notes: formData.notes,
+            },
+            items: (items || []).map(i => ({
+              productId: i._id,
+              name: i.name,
+              anime: i.anime,
+              category: i.category,
+              size: i.size,
+              price: i.price,
+              originalPrice: i.originalPrice,
+              quantity: i.quantity,
+            })),
+            totals: {
+              itemsCount: totalItems || 0,
+              subtotal: totalPrice || 0,
+              shipping: 80,
+              total: (totalPrice || 0) + 80,
+            },
+          })
+        });
+        const apiData = await apiRes.json();
+        if (apiRes.ok && apiData.orderNo) {
+          // use backend order number
+          clearCart();
+          router.push(`/order/${apiData.orderNo}`);
+        } else {
+          // fallback to local tracking if backend fails
+          throw new Error('Order API failed');
+        }
       } catch (_) {
-        // ignore storage errors
+        try {
+          const existingRaw = localStorage.getItem('arix_orders');
+          const existing = existingRaw ? JSON.parse(existingRaw) : [];
+          const updated = [orderRecord, ...existing].slice(0, 50);
+          localStorage.setItem('arix_orders', JSON.stringify(updated));
+        } catch (_) {}
+        clearCart();
+        router.push(`/order/${orderRecord.id}`);
       }
       
       // Success toast
@@ -137,9 +181,7 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
         );
       }, 1000);
 
-      // Clear cart and navigate to tracking page
-      clearCart();
-      router.push(`/order/${orderNumber}`);
+      // navigation handled above
       
       // Reset form
       setFormData({
