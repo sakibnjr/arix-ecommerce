@@ -10,6 +10,7 @@ export default function AdminSlidersPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingSlider, setEditingSlider] = useState(null);
   const [dragIndex, setDragIndex] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -80,6 +81,28 @@ export default function AdminSlidersPage() {
       order: 0,
       isActive: true
     });
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const data = new FormData();
+    data.append('file', file);
+    try {
+      setUploading(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/uploads?folder=arix/sliders`, {
+        method: 'POST',
+        body: data,
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      setFormData((prev) => ({ ...prev, image: json.url }));
+      toast.success('Image uploaded');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   // HTML5 Drag & Drop handlers (no external dnd lib)
@@ -275,19 +298,22 @@ export default function AdminSlidersPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL *
+                  Slide Image *
                 </label>
-                <input
-                  type="url"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                  placeholder="https://example.com/image.jpg"
-                  required
-                />
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="block w-full text-sm text-gray-700 file:mr-3 file:px-3 file:py-2 file:rounded-lg file:border file:border-gray-300 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                  />
+                  {uploading && <span className="text-sm text-gray-500">Uploading…</span>}
+                </div>
+                {formData.image && (
+                  <p className="text-xs text-gray-500 mt-1 truncate">{formData.image}</p>
+                )}
                 <p className="text-xs text-gray-500 mt-1">
-                  💡 <strong>Pro tip:</strong> Use high-quality images (1200x800px or larger) with good contrast. 
-                  Images with dark backgrounds work best with our elegant design.
+                  Tip: Use high-quality images (~1200×800 or larger). Dark backgrounds look best.
                 </p>
               </div>
               
