@@ -105,7 +105,7 @@ export default function AdminOrdersPage() {
                         <button onClick={() => toggleDetails(o.orderNo)} className="px-2 py-1 text-xs rounded bg-black text-white hover:bg-gray-800">
                           {openRows[o.orderNo] ? 'Hide' : 'Details'}
                         </button>
-                        {['placed','processing','shipped','delivered','cancelled'].map(s => (
+                        {['placed','confirmed','processing','shipped','delivered','cancelled'].map(s => (
                           <button key={s} onClick={() => updateStatus(o.orderNo, s)} className="px-2 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300">
                             {s}
                           </button>

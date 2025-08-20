@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema(
       shipping: Number,
       total: Number,
     },
-    status: { type: String, enum: ['placed', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'placed' },
+    status: { type: String, enum: ['placed', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'placed' },
   },
   { timestamps: true }
 );

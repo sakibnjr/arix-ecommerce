@@ -96,6 +96,7 @@ export default function CheckoutForm({ isOpen, onClose, orderType = 'cart' }) {
         id: orderNumber,
         createdAt: new Date().toISOString(),
         orderType,
+        status: 'placed',
         customer: {
           fullName: formData.fullName,
           email: formData.email,

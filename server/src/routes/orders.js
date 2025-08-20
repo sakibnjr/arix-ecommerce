@@ -63,7 +63,7 @@ router.get('/:orderNo', asyncHandler(async (req, res) => {
 }));
 
 // PATCH /api/orders/:orderNo (update status)
-const statusSchema = z.object({ status: z.enum(['placed', 'processing', 'shipped', 'delivered', 'cancelled']) });
+const statusSchema = z.object({ status: z.enum(['placed', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']) });
 router.patch('/:orderNo', asyncHandler(async (req, res) => {
   const parsed = statusSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
