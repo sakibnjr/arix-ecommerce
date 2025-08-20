@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import productsRouter from './routes/products.js';
 import ordersRouter from './routes/orders.js';
 import uploadsRouter from './routes/uploads.js';
+import slidersRouter from './routes/sliders.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/uploads', uploadsRouter);
+app.use('/api/sliders', slidersRouter);
 
 // Basic error handler to prevent crashes
 // eslint-disable-next-line no-unused-vars

@@ -11,7 +11,8 @@ import {
   MdVisibility,
   MdBarChart,
   MdInventory,
-  MdPeople
+  MdPeople,
+  MdImage
 } from 'react-icons/md';
 import { useAdminStats } from '../hooks/useAdminData';
 
@@ -92,6 +93,13 @@ export default function AdminHome() {
             >
               <MdInventory className="w-5 h-5" />
               Manage Products
+            </Link>
+            <Link 
+              href="/admin/sliders"
+              className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium backdrop-blur-sm"
+            >
+              <MdImage className="w-5 h-5" />
+              Manage Sliders
             </Link>
             <a 
               href="/products" 

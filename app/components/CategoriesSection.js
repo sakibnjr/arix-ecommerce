@@ -1,18 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { HiArrowRight, HiCheckCircle, HiLightBulb, HiHeart } from 'react-icons/hi';
-import { AiFillStar } from 'react-icons/ai';
+import Image from 'next/image';
+import { HiArrowRight } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 
 export default function CategoriesSection() {
   const categories = [
     {
       id: 1,
-      name: 'Normal T-Shirts',
+      name: 'Classic T-Shirts',
       description: 'Classic fit t-shirts with premium comfort and quality',
-      image: '/placeholder-normal-tshirt.jpg',
-      href: '/products?category=Normal T-Shirt',
+      image: '/images/categories/classic.jpg',
+      href: '/products?category=normal',
       color: 'from-black to-gray-800',
       features: ['Regular Fit', 'Cotton Blend', 'Durable Print']
     },
@@ -20,86 +20,103 @@ export default function CategoriesSection() {
       id: 2,
       name: 'Drop Shoulder T-Shirts',
       description: 'Relaxed oversized fit for ultimate comfort and style',
-      image: '/placeholder-drop-shoulder.jpg',
-      href: '/products?category=Drop Shoulder',
+      image: '/images/categories/drop-shoulder.jpg',
+      href: '/products?category=drop-shoulder',
       color: 'from-gray-800 to-black',
       features: ['Oversized Fit', 'Soft Cotton', 'Trendy Design']
     }
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
-        {/* Section Header */}
+    <section className="relative py-8 sm:py-12 lg:py-16 bg-white overflow-hidden">
+      {/* Sophisticated Background Elements */}
+      <div className="absolute inset-0">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-gray-50/30" />
+        
+        {/* Geometric accent elements */}
+        <div className="absolute top-0 left-1/4 w-64 h-64 bg-gradient-to-br from-black/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-tl from-black/5 to-transparent rounded-full blur-3xl" />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Enhanced Section Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12"
         >
-          <h2 className="font-display text-display-md md:text-display-lg text-gray-900 mb-6 leading-tight">
+          {/* Subtle accent line */}
+          <div className="inline-flex items-center gap-3 mb-3">
+            <div className="w-6 h-px bg-black/20" />
+            <span className="text-xs font-medium text-black/60 tracking-widest uppercase">Styles</span>
+            <div className="w-6 h-px bg-black/20" />
+          </div>
+          
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 leading-tight">
             Shop by Style
           </h2>
-          <p className="text-body-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Choose your perfect fit from our carefully curated collection of t-shirt styles
           </p>
         </motion.div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Enhanced Categories Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
-              whileHover={{ y: -8 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="group"
             >
               <Link
                 href={category.href}
-                className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 block"
+                className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 block h-full"
               >
-              <div className={`bg-gradient-to-br ${category.color} p-10 lg:p-16 min-h-[420px] flex flex-col justify-between`}>
-                {/* Content */}
-                <div className="text-white">
-                  <h3 className="font-display text-heading-xl md:text-display-md font-bold leading-tight">
-                    {category.name}
-                  </h3>
-                </div>
+                <div className={`relative p-6 sm:p-8 lg:p-10 min-h-[320px] sm:min-h-[360px] flex flex-col justify-between overflow-hidden h-full`}>
+                  {/* Full background image */}
+                  <Image
+                    src={category.image}
+                    alt={`${category.name} preview`}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    priority={index === 0}
+                  />
+                  {/* Gradient overlay for readability */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-70`} />
 
-                {/* Image Placeholder */}
-                <div className="relative">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center aspect-square max-w-xs ml-auto">
-                    <div className="text-center text-white/80">
-                      <AiFillStar className="w-20 h-20 mx-auto mb-3" />
-                      <p className="text-sm font-medium">
-                        {category.name.split(' ')[0]} Style
-                      </p>
-                    </div>
+                  {/* Content */}
+                  <div className="text-white relative z-10">
+                    <h3 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold leading-tight mb-3">
+                      {category.name}
+                    </h3>
+                    <p className="text-gray-200 text-sm sm:text-base max-w-md leading-relaxed">
+                      {category.description}
+                    </p>
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="mt-6 sm:mt-8 relative z-10">
+                    <span className="inline-flex items-center bg-white text-gray-900 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold group-hover:bg-gray-100 transition-all duration-300 shadow-lg group-hover:shadow-xl text-sm sm:text-base">
+                      Shop {category.name}
+                      <HiArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </div>
                 </div>
-
-                {/* CTA Button */}
-                <div className="mt-8">
-                  <span className="inline-flex items-center bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold group-hover:bg-gray-100 transition-colors">
-                    Shop {category.name}
-                    <HiArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute top-4 right-4 opacity-20">
-                  <AiFillStar className="w-24 h-24" />
-                </div>
-              </div>
               </Link>
             </motion.div>
           ))}
         </div>
-
-
       </div>
     </section>
   );

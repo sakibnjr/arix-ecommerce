@@ -61,41 +61,50 @@ export default function Header() {
   }, [searchQuery]);
 
   return (
-    <header className="bg-black shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex justify-between items-center h-20">
+    <header className="relative bg-black shadow-lg sticky top-0 z-50 overflow-hidden">
+      {/* Sophisticated Background Elements */}
+      <div className="absolute inset-0">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/50 via-transparent to-gray-900/50" />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 sm:h-18 lg:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="font-display text-display-md text-white hover:text-gray-300 transition-colors duration-300">
+            <Link href="/" className="font-display text-xl sm:text-2xl lg:text-3xl text-white hover:text-gray-300 transition-all duration-300 hover:scale-105 transform">
               ARIX
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-10">
-            <Link href="/" className="text-body-lg text-gray-300 hover:text-white transition-colors duration-300 font-medium tracking-wide">
+          <nav className="hidden md:flex space-x-6 lg:space-x-8">
+            <Link href="/" className="text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 font-medium tracking-wide hover:scale-105 transform">
               Home
             </Link>
-            <Link href="/new-arrivals" className="text-body-lg text-gray-300 hover:text-white transition-colors duration-300 font-medium tracking-wide">
+            <Link href="/new-arrivals" className="text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 font-medium tracking-wide hover:scale-105 transform">
               New Arrivals
             </Link>
-            <Link href="/on-sale" className="text-body-lg text-gray-300 hover:text-white transition-colors duration-300 font-medium tracking-wide">
+            <Link href="/on-sale" className="text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 font-medium tracking-wide hover:scale-105 transform">
               On Sale
             </Link>
           </nav>
 
           {/* Cart and User Actions */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             <button 
               onClick={toggleSearch}
-              className="p-3 text-gray-300 hover:text-white transition-colors duration-300"
+              className="p-2 sm:p-3 text-gray-300 hover:text-white transition-all duration-300 hover:scale-110 transform rounded-lg hover:bg-white/10"
             >
-              <HiSearch className="w-6 h-6" />
+              <HiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
-            <Link href="/cart" className="p-3 text-gray-300 hover:text-white transition-colors duration-300 relative">
-              <HiShoppingCart className="w-6 h-6" />
+            <Link href="/cart" className="p-2 sm:p-3 text-gray-300 hover:text-white transition-all duration-300 relative hover:scale-110 transform rounded-lg hover:bg-white/10">
+              <HiShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-white text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold tracking-wide">
+                <span className="absolute -top-1 -right-1 bg-white text-black text-xs rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center font-bold tracking-wide">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
@@ -106,12 +115,12 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 text-gray-300 hover:text-white transition-colors duration-300"
+              className="p-2 text-gray-300 hover:text-white transition-all duration-300 hover:scale-110 transform rounded-lg hover:bg-white/10"
             >
               {isMenuOpen ? (
-                <HiX className="w-6 h-6" />
+                <HiX className="w-5 h-5 sm:w-6 sm:h-6" />
               ) : (
-                <HiMenu className="w-6 h-6" />
+                <HiMenu className="w-5 h-5 sm:w-6 sm:h-6" />
               )}
             </button>
           </div>
@@ -127,27 +136,27 @@ export default function Header() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="md:hidden overflow-hidden"
             >
-              <div className="px-4 pt-4 pb-6 space-y-2 sm:px-6 bg-black border-t border-gray-700">
-                <Link href="/" className="block px-4 py-3 text-body-lg text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">
+              <div className="px-4 pt-3 pb-5 space-y-1 sm:px-6 bg-black border-t border-gray-700">
+                <Link href="/" className="block px-4 py-2.5 text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 tracking-wide rounded-lg hover:bg-white/10">
                   Home
                 </Link>
-                <Link href="/new-arrivals" className="block px-4 py-3 text-body-lg text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">
+                <Link href="/new-arrivals" className="block px-4 py-2.5 text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 tracking-wide rounded-lg hover:bg-white/10">
                   New Arrivals
                 </Link>
-                <Link href="/on-sale" className="block px-4 py-3 text-body-lg text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">
+                <Link href="/on-sale" className="block px-4 py-2.5 text-sm sm:text-base text-gray-300 hover:text-white transition-all duration-300 tracking-wide rounded-lg hover:bg-white/10">
                   On Sale
                 </Link>
-                <div className="flex items-center space-x-6 px-4 py-4 border-t border-gray-700 mt-2">
+                <div className="flex items-center space-x-4 px-4 py-3 border-t border-gray-700 mt-2">
                   <button 
                     onClick={toggleSearch}
-                    className="p-3 text-gray-300 hover:text-white transition-colors duration-300"
+                    className="p-2.5 text-gray-300 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/10"
                   >
-                    <HiSearch className="w-6 h-6" />
+                    <HiSearch className="w-5 h-5" />
                   </button>
-                  <Link href="/cart" className="p-3 text-gray-300 hover:text-white transition-colors duration-300 relative">
-                    <HiShoppingCart className="w-6 h-6" />
+                  <Link href="/cart" className="p-2.5 text-gray-300 hover:text-white transition-all duration-300 relative rounded-lg hover:bg-white/10">
+                    <HiShoppingCart className="w-5 h-5" />
                     {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-white text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold tracking-wide">
+                      <span className="absolute -top-1 -right-1 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold tracking-wide">
                         {totalItems > 99 ? '99+' : totalItems}
                       </span>
                     )}
@@ -158,7 +167,7 @@ export default function Header() {
           )}
         </AnimatePresence>
 
-        {/* Search Modal */}
+        {/* Enhanced Search Modal */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div 
@@ -166,57 +175,62 @@ export default function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             >
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden"
+                className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden border border-gray-100"
               >
-              {/* Search Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h3 className="font-display text-heading-lg text-gray-900">Search Products</h3>
+              {/* Enhanced Search Header */}
+              <div className="flex items-center justify-between p-5 sm:p-6 border-b border-gray-200 bg-gray-50">
+                <h3 className="font-display text-lg sm:text-xl font-semibold text-gray-900">Search Products</h3>
                 <button
                   onClick={toggleSearch}
-                  className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                  className="p-2 text-gray-500 hover:text-gray-700 transition-all duration-300 hover:scale-110 transform rounded-lg hover:bg-gray-200"
                 >
-                  <HiX className="w-6 h-6" />
+                  <HiX className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Search Form */}
-              <form onSubmit={handleSearch} className="p-6 border-b border-gray-200">
+              {/* Enhanced Search Form */}
+              <form onSubmit={handleSearch} className="p-5 sm:p-6 border-b border-gray-200">
                 <div className="relative">
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by product name, anime series, or category..."
-                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors text-body-md bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-300 text-sm sm:text-base bg-white text-gray-900 placeholder-gray-500"
                     autoFocus
                   />
                   <HiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
                 </div>
                 <button
                   type="submit"
-                  className="w-full mt-4 bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors text-body-md"
+                  className="w-full mt-4 bg-black text-white py-3 px-6 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 text-sm sm:text-base hover:scale-105 transform"
                 >
                   Search
                 </button>
               </form>
 
-              {/* Search Results Preview */}
+              {/* Enhanced Search Results Preview */}
               {searchQuery.trim() && (
-                <div className="p-6">
-                  <h4 className="font-display text-heading-md text-gray-900 mb-4">
+                <div className="p-5 sm:p-6">
+                  <h4 className="font-display text-base sm:text-lg font-semibold text-gray-900 mb-4">
                     Quick Results ({results.length})
                   </h4>
                   {loadingResults ? (
-                    <div className="text-center py-8 text-gray-600">Searching...</div>
+                    <div className="text-center py-8 text-gray-600">
+                      <div className="inline-flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                        Searching...
+                      </div>
+                    </div>
                   ) : results.length > 0 ? (
-                    <div className="space-y-3 overflow-y-auto pr-2">
+                    <div className="space-y-2 overflow-y-auto pr-2 max-h-64">
                       {results.slice(0, 8).map((product, index) => (
                         <motion.div
                           key={product._id || product.id}
@@ -227,21 +241,21 @@ export default function Header() {
                           <Link
                             href={`/product/${product._id || product.id}`}
                             onClick={toggleSearch}
-                            className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-200"
+                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 group border border-transparent hover:border-gray-200"
                           >
-                            <div className="w-12 h-12 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-300">
-                              <span className="text-sm font-bold text-gray-800">{product.name.charAt(0)}</span>
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-300">
+                              <span className="text-xs sm:text-sm font-bold text-gray-800">{product.name.charAt(0)}</span>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h5 className="font-medium text-gray-900 group-hover:text-black transition-colors truncate">
+                              <h5 className="font-medium text-gray-900 group-hover:text-black transition-colors truncate text-sm sm:text-base">
                                 {product.name}
                               </h5>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs sm:text-sm text-gray-600">
                                 {product.anime} • {formatCategoryLabel(product.category)}
                               </p>
                             </div>
                             <div className="text-right">
-                              <span className="font-semibold text-gray-800">৳{Number(product.price || 0).toFixed(2)}</span>
+                              <span className="font-semibold text-gray-800 text-sm sm:text-base">৳{Number(product.price || 0).toFixed(2)}</span>
                             </div>
                           </Link>
                         </motion.div>
@@ -251,7 +265,7 @@ export default function Header() {
                           <Link
                             href={`/products?search=${encodeURIComponent(searchQuery.trim())}`}
                             onClick={toggleSearch}
-                            className="text-sm text-blue-700 hover:text-blue-900 font-medium underline"
+                            className="text-sm text-blue-700 hover:text-blue-900 font-medium underline hover:scale-105 transform inline-block"
                           >
                             View all {results.length} results →
                           </Link>
@@ -260,6 +274,9 @@ export default function Header() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <HiSearch className="w-8 h-8 text-gray-400" />
+                      </div>
                       <p className="text-gray-700 mb-2 font-medium">No products found</p>
                       <p className="text-sm text-gray-600">Try different keywords or browse all products</p>
                     </div>
@@ -267,29 +284,29 @@ export default function Header() {
                 </div>
               )}
 
-              {/* Browse All Products */}
+              {/* Enhanced Browse All Products */}
               {!searchQuery.trim() && (
-                <div className="p-6 text-center">
+                <div className="p-5 sm:p-6 text-center">
                   <p className="text-gray-700 mb-4 font-medium">Start typing to search products</p>
-                  <div className="flex flex-wrap gap-3 justify-center">
+                  <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
                     <Link
                       href="/products"
                       onClick={toggleSearch}
-                      className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium border border-gray-300"
+                      className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-300 text-sm font-medium border border-gray-300 hover:scale-105 transform"
                     >
                       All Products
                     </Link>
                     <Link
                       href="/new-arrivals"
                       onClick={toggleSearch}
-                      className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium border border-gray-300"
+                      className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-300 text-sm font-medium border border-gray-300 hover:scale-105 transform"
                     >
                       New Arrivals
                     </Link>
                     <Link
                       href="/on-sale"
                       onClick={toggleSearch}
-                      className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium border border-gray-300"
+                      className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-300 text-sm font-medium border border-gray-300 hover:scale-105 transform"
                     >
                       On Sale
                     </Link>

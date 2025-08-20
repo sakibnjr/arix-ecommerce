@@ -11,6 +11,7 @@ export default function AdminLayout({ children }) {
           <Link href="/admin" className="text-sm px-3 py-2 rounded bg-black text-white">Overview</Link>
           <Link href="/admin/orders" className="text-sm px-3 py-2 rounded bg-gray-200 text-gray-900">Orders</Link>
           <Link href="/admin/products" className="text-sm px-3 py-2 rounded bg-gray-200 text-gray-900">Products</Link>
+          <Link href="/admin/sliders" className="text-sm px-3 py-2 rounded bg-gray-200 text-gray-900">Sliders</Link>
         </nav>
         {children}
       </div>
