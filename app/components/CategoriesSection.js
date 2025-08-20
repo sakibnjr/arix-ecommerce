@@ -11,7 +11,7 @@ export default function CategoriesSection() {
       id: 1,
       name: 'Classic T-Shirts',
       description: 'Classic fit t-shirts with premium comfort and quality',
-      image: '/images/categories/classic.jpg',
+      image: 'https://images.unsplash.com/photo-1706801023261-1b7878b7bbfb?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       href: '/products?category=normal',
       color: 'from-black to-gray-800',
       features: ['Regular Fit', 'Cotton Blend', 'Durable Print']
@@ -20,7 +20,7 @@ export default function CategoriesSection() {
       id: 2,
       name: 'Drop Shoulder T-Shirts',
       description: 'Relaxed oversized fit for ultimate comfort and style',
-      image: '/images/categories/drop-shoulder.jpg',
+      image: 'https://images.unsplash.com/photo-1593278641722-49b1047ede21?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGFuaW1lJTIwdHNoaXJ0fGVufDB8fDB8fHww',
       href: '/products?category=drop-shoulder',
       color: 'from-gray-800 to-black',
       features: ['Oversized Fit', 'Soft Cotton', 'Trendy Design']

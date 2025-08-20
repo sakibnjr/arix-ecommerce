@@ -6,9 +6,10 @@ import toast from 'react-hot-toast';
 import { useSliderData } from '../../hooks/useSliderData';
 
 export default function AdminSlidersPage() {
-  const { sliders, loading, createSlider, updateSlider, deleteSlider, reorderSliders } = useSliderData();
+  const { sliders, loading, refetch, createSlider, updateSlider, deleteSlider, reorderSliders } = useSliderData();
   const [showForm, setShowForm] = useState(false);
   const [editingSlider, setEditingSlider] = useState(null);
+  const [dragIndex, setDragIndex] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -27,6 +28,7 @@ export default function AdminSlidersPage() {
         await createSlider(formData);
         toast.success('Slider created!');
       }
+      await refetch();
       
       setShowForm(false);
       setEditingSlider(null);
@@ -54,6 +56,7 @@ export default function AdminSlidersPage() {
     try {
       await deleteSlider(id);
       toast.success('Slider deleted!');
+      await refetch();
     } catch (error) {
       toast.error(error.message);
     }
@@ -63,6 +66,7 @@ export default function AdminSlidersPage() {
     try {
       await reorderSliders(newOrder);
       toast.success('Sliders reordered!');
+      await refetch();
     } catch (error) {
       toast.error(error.message);
     }
@@ -78,14 +82,27 @@ export default function AdminSlidersPage() {
     });
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
+  // HTML5 Drag & Drop handlers (no external dnd lib)
+  const onDragStart = (index) => (e) => {
+    setDragIndex(index);
+    try { e.dataTransfer.effectAllowed = 'move'; } catch (_) {}
+  };
 
+  const onDragOver = (e) => {
+    e.preventDefault();
+    try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
+  };
+
+  const onDrop = (overIndex) => async (e) => {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === overIndex) {
+      setDragIndex(null);
+      return;
+    }
     const items = Array.from(sliders);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setSliders(items);
+    const [moved] = items.splice(dragIndex, 1);
+    items.splice(overIndex, 0, moved);
+    setDragIndex(null);
     handleReorder(items);
   };
 
@@ -134,11 +151,18 @@ export default function AdminSlidersPage() {
         ) : (
           <div className="divide-y divide-gray-200">
             {sliders.map((slider, index) => (
-              <div key={slider._id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div
+                key={slider._id}
+                className="p-6 hover:bg-gray-50 transition-colors"
+                draggable
+                onDragStart={onDragStart(index)}
+                onDragOver={onDragOver}
+                onDrop={onDrop(index)}
+              >
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2 text-gray-400">
                     <MdDragIndicator className="w-5 h-5 cursor-move" />
-                    <span className="text-sm font-medium">{slider.order + 1}</span>
+                    <span className="text-sm font-medium">{index + 1}</span>
                   </div>
                   
                   <div className="flex-1 grid grid-cols-12 gap-4 items-center">

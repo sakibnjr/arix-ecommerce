@@ -59,6 +59,22 @@ router.post('/', asyncHandler(async (req, res) => {
   res.status(201).json({ item: doc });
 }));
 
+// PUT /api/sliders/reorder - Reorder multiple sliders (must be declared before /:id PUT)
+router.put('/reorder', asyncHandler(async (req, res) => {
+  const { sliders } = req.body;
+  
+  if (!Array.isArray(sliders)) {
+    return res.status(400).json({ error: 'Sliders array is required' });
+  }
+  
+  const updatePromises = sliders.map(({ id, order }) => 
+    Slider.findByIdAndUpdate(id, { order }, { new: true })
+  );
+  
+  const updatedSliders = await Promise.all(updatePromises);
+  res.json({ items: updatedSliders });
+}));
+
 // PUT /api/sliders/:id - Update slider
 router.put('/:id', asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -96,20 +112,6 @@ router.delete('/:id', asyncHandler(async (req, res) => {
   res.json({ message: 'Slider deleted successfully' });
 }));
 
-// PUT /api/sliders/reorder - Reorder multiple sliders
-router.put('/reorder', asyncHandler(async (req, res) => {
-  const { sliders } = req.body;
-  
-  if (!Array.isArray(sliders)) {
-    return res.status(400).json({ error: 'Sliders array is required' });
-  }
-  
-  const updatePromises = sliders.map(({ id, order }) => 
-    Slider.findByIdAndUpdate(id, { order }, { new: true })
-  );
-  
-  const updatedSliders = await Promise.all(updatePromises);
-  res.json({ items: updatedSliders });
-}));
+// (reorder route moved above the /:id PUT to avoid route matching conflicts)
 
 export default router;

@@ -16,7 +16,7 @@ export default function AnimeCategoriesSection() {
       textColor: 'text-white',
       popularity: 'Trending',
       characters: ['Gojo Satoru', 'Yuji Itadori', 'Megumi Fushiguro'],
-      image: '/images/anime/jujutsu-kaisen.jpg'
+      image: 'https://images.unsplash.com/photo-1722573783570-9811ce67025e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8anVqdXRzdSUyMGthaXNlbnxlbnwwfHwwfHx8MA%3D%3D'
     },
     {
       id: 2,
