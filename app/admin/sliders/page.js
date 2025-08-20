@@ -51,9 +51,32 @@ export default function AdminSlidersPage() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this slider?')) return;
-    
+  // React-based confirmation using react-hot-toast custom UI
+  const confirmAction = (message) => new Promise((resolve) => {
+    const tid = toast.custom((t) => (
+      <div className="max-w-sm w-full bg-white border border-gray-200 shadow-lg rounded-lg p-4">
+        <p className="text-sm text-gray-800">{message}</p>
+        <div className="mt-3 flex justify-end gap-2">
+          <button
+            onClick={() => { toast.dismiss(t.id); resolve(false); }}
+            className="px-3 py-1.5 text-sm rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => { toast.dismiss(t.id); resolve(true); }}
+            className="px-3 py-1.5 text-sm rounded-md bg-red-600 hover:bg-red-700 text-white"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity, position: 'top-center' });
+  });
+
+  const handleDelete = async (id, title) => {
+    const ok = await confirmAction(`Delete "${title ?? 'this slide'}"? This action cannot be undone.`);
+    if (!ok) return;
     try {
       await deleteSlider(id);
       toast.success('Slider deleted!');
@@ -131,7 +154,7 @@ export default function AdminSlidersPage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto py-6">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-200 rounded w-1/4"></div>
           <div className="h-64 bg-gray-200 rounded"></div>
@@ -141,7 +164,7 @@ export default function AdminSlidersPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="w-full mx-auto py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -229,7 +252,7 @@ export default function AdminSlidersPage() {
                         <MdEdit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(slider._id)}
+                        onClick={() => handleDelete(slider._id, slider.title)}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete Slide"
                       >
