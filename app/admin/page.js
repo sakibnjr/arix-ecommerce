@@ -77,39 +77,6 @@ export default function AdminHome() {
               <MdRefresh className={`w-6 h-6 ${refreshing ? 'animate-spin' : ''}`} />
             </button>
           </div>
-          
-          {/* Quick Actions */}
-          <div className="flex flex-wrap gap-4">
-            <Link 
-              href="/admin/products/new"
-              className="flex items-center gap-2 px-6 py-3 bg-white text-gray-900 rounded-lg hover:bg-gray-100 transition-colors font-medium"
-            >
-              <MdAdd className="w-5 h-5" />
-              Add Product
-            </Link>
-            <Link 
-              href="/admin/products"
-              className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium backdrop-blur-sm"
-            >
-              <MdInventory className="w-5 h-5" />
-              Manage Products
-            </Link>
-            <Link 
-              href="/admin/sliders"
-              className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium backdrop-blur-sm"
-            >
-              <MdImage className="w-5 h-5" />
-              Manage Sliders
-            </Link>
-            <a 
-              href="/products" 
-              target="_blank"
-              className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium backdrop-blur-sm"
-            >
-              <MdVisibility className="w-5 h-5" />
-              View Store
-            </a>
-          </div>
         </div>
         
         {/* Decorative background elements */}
@@ -117,74 +84,44 @@ export default function AdminHome() {
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-white/5 to-transparent rounded-full translate-y-24 -translate-x-24"></div>
       </div>
       
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Overview (simplified) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
               <p className="text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
-              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                <MdTrendingUp className="w-3 h-3" />
-                Active inventory
-              </p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <MdShoppingBag className="w-7 h-7 text-white" />
             </div>
           </div>
         </div>
-
         <div className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:border-green-300">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Total Orders</p>
               <p className="text-3xl font-bold text-gray-900">{stats.totalOrders}</p>
-              <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                <MdPeople className="w-3 h-3" />
-                Customer orders
-              </p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <MdShoppingCart className="w-7 h-7 text-white" />
             </div>
           </div>
         </div>
-
         <div className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:border-purple-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">New Arrivals</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.newProducts}</p>
-              <p className="text-xs text-purple-600 mt-1 flex items-center gap-1">
-                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-                Recently added
-              </p>
+              <p className="text-sm font-medium text-gray-600 mb-1">Revenue</p>
+              <p className="text-3xl font-bold text-gray-900">৳{(stats.revenue || 0).toFixed(2)}</p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="text-white font-bold text-lg">NEW</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:border-orange-300">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">On Sale</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.saleProducts}</p>
-              <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
-                <MdBarChart className="w-3 h-3" />
-                Discounted items
-              </p>
-            </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <MdTrendingUp className="w-7 h-7 text-white" />
+              <MdBarChart className="w-7 h-7 text-white" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Management Sections */}
+      {/* Management Sections (simplified) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Product Management */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
@@ -253,60 +190,12 @@ export default function AdminHome() {
               <span className="text-green-400 group-hover:text-green-600 transition-colors">→</span>
             </Link>
             
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <MdBarChart className="w-5 h-5 text-gray-600" />
-                <span className="font-medium text-gray-900">Analytics</span>
-              </div>
-              <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Coming Soon</span>
-            </div>
+            
           </div>
         </div>
       </div>
 
-      {/* Quick Links & Shortcuts */}
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
-            <MdInventory className="w-5 h-5 text-white" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900">Quick Actions</h3>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href="/admin/products/new" className="group p-4 bg-white rounded-xl border hover:border-blue-300 hover:shadow-md transition-all">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
-              <MdAdd className="w-5 h-5 text-blue-600" />
-            </div>
-            <p className="font-medium text-gray-900 mb-1">Add Product</p>
-            <p className="text-sm text-gray-600">Create new anime t-shirt</p>
-          </Link>
-          
-          <Link href="/admin/products" className="group p-4 bg-white rounded-xl border hover:border-gray-400 hover:shadow-md transition-all">
-            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
-              <MdInventory className="w-5 h-5 text-gray-600" />
-            </div>
-            <p className="font-medium text-gray-900 mb-1">Product List</p>
-            <p className="text-sm text-gray-600">Manage inventory</p>
-          </Link>
-          
-          <Link href="/admin/orders" className="group p-4 bg-white rounded-xl border hover:border-green-300 hover:shadow-md transition-all">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
-              <MdShoppingCart className="w-5 h-5 text-green-600" />
-            </div>
-            <p className="font-medium text-gray-900 mb-1">Order List</p>
-            <p className="text-sm text-gray-600">Track customer orders</p>
-          </Link>
-          
-          <a href="/products" target="_blank" className="group p-4 bg-white rounded-xl border hover:border-purple-300 hover:shadow-md transition-all">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
-              <MdVisibility className="w-5 h-5 text-purple-600" />
-            </div>
-            <p className="font-medium text-gray-900 mb-1">View Store</p>
-            <p className="text-sm text-gray-600">See live website</p>
-          </a>
-        </div>
-      </div>
+      {/* Quick Links removed */}
     </div>
   );
 }

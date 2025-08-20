@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MdArrowBack, MdCloudUpload, MdClose, MdCheckCircle, MdInfo } from 'react-icons/md';
 import toast from 'react-hot-toast';
@@ -46,6 +46,21 @@ export default function AdminNewProductPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Auto-calculate discount percentage from originalPrice and price
+  useEffect(() => {
+    const price = parseFloat(form.price);
+    const original = parseFloat(form.originalPrice);
+    let computed = '';
+    if (!isNaN(price) && !isNaN(original) && original > 0 && price < original) {
+      const pct = Math.round(((original - price) / original) * 100);
+      computed = String(pct);
+    }
+    setForm((prev) => {
+      if (prev.discount === computed) return prev;
+      return { ...prev, discount: computed };
+    });
+  }, [form.price, form.originalPrice]);
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -116,7 +131,7 @@ export default function AdminNewProductPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full mx-auto">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
@@ -129,15 +144,6 @@ export default function AdminNewProductPage() {
           </Link>
           <div>
             <h1 className="font-display text-3xl font-bold text-gray-900">Add New Product</h1>
-            <p className="text-gray-600 mt-1">Create a new anime t-shirt product for your store</p>
-          </div>
-        </div>
-        
-        {/* Progress indicator */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center gap-2">
-            <MdInfo className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-medium text-blue-900">Required: Product name, price, anime, category, and at least one image</span>
           </div>
         </div>
       </div>
@@ -164,7 +170,7 @@ export default function AdminNewProductPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Price *</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">৳</span>
                     <input 
                       name="price" 
                       type="number" 
@@ -180,7 +186,7 @@ export default function AdminNewProductPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Original Price</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">৳</span>
                     <input 
                       name="originalPrice" 
                       type="number" 
@@ -191,7 +197,6 @@ export default function AdminNewProductPage() {
                       className="w-full border border-gray-300 rounded-lg pl-8 pr-4 py-3 focus:ring-2 focus:ring-black focus:border-transparent transition-all" 
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Leave empty if no discount</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -245,18 +250,6 @@ export default function AdminNewProductPage() {
                     </label>
                   ))}
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-xs text-gray-500">Selected:</span>
-                  <div className="flex gap-1">
-                    {form.sizes.length > 0 ? form.sizes.map(size => (
-                      <span key={size} className="px-2 py-1 bg-black text-white text-xs rounded">
-                        {size}
-                      </span>
-                    )) : (
-                      <span className="text-xs text-gray-400">None selected</span>
-                    )}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -279,7 +272,6 @@ export default function AdminNewProductPage() {
                   <label htmlFor="isNew" className="text-sm font-medium text-gray-900 cursor-pointer">
                     New Arrival
                   </label>
-                  <p className="text-xs text-gray-500">Mark this product as a new arrival</p>
                 </div>
               </div>
               <div>
@@ -292,11 +284,11 @@ export default function AdminNewProductPage() {
                     value={form.discount} 
                     onChange={onChange} 
                     placeholder="0"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-8 focus:ring-2 focus:ring-black focus:border-transparent transition-all" 
+                    readOnly
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-8 bg-gray-50 focus:ring-2 focus:ring-black focus:border-transparent transition-all" 
                   />
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Leave 0 for no discount</p>
               </div>
             </div>
           </div>
@@ -306,19 +298,13 @@ export default function AdminNewProductPage() {
         <div className="space-y-6">
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h3>
-            <p className="text-sm text-gray-600 mb-6">Upload high-quality images for your product. At least one image is required.</p>
             <div className="space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
                 <div className="text-center">
                   <MdCloudUpload className="mx-auto h-12 w-12 text-gray-400" />
                   <div className="mt-4">
                     <label htmlFor="front-upload" className="cursor-pointer">
-                      <span className="mt-2 block text-sm font-medium text-gray-900">
-                        Front View *
-                      </span>
-                      <span className="mt-1 block text-xs text-gray-500">
-                        PNG, JPG up to 10MB
-                      </span>
+                      <span className="mt-2 block text-sm font-medium text-gray-900">Front *</span>
                     </label>
                     <input
                       id="front-upload"
@@ -353,10 +339,6 @@ export default function AdminNewProductPage() {
                     >
                       <MdClose className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MdCheckCircle className="w-4 h-4 text-green-500" />
-                      <span className="text-xs text-green-600">Uploaded successfully</span>
-                    </div>
                   </div>
                 )}
               </div>
@@ -365,12 +347,7 @@ export default function AdminNewProductPage() {
                   <MdCloudUpload className="mx-auto h-12 w-12 text-gray-400" />
                   <div className="mt-4">
                     <label htmlFor="back-upload" className="cursor-pointer">
-                      <span className="mt-2 block text-sm font-medium text-gray-900">
-                        Back View
-                      </span>
-                      <span className="mt-1 block text-xs text-gray-500">
-                        PNG, JPG up to 10MB
-                      </span>
+                      <span className="mt-2 block text-sm font-medium text-gray-900">Back</span>
                     </label>
                     <input
                       id="back-upload"
@@ -405,10 +382,6 @@ export default function AdminNewProductPage() {
                     >
                       <MdClose className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MdCheckCircle className="w-4 h-4 text-green-500" />
-                      <span className="text-xs text-green-600">Uploaded successfully</span>
-                    </div>
                   </div>
                 )}
               </div>
@@ -417,12 +390,7 @@ export default function AdminNewProductPage() {
                   <MdCloudUpload className="mx-auto h-12 w-12 text-gray-400" />
                   <div className="mt-4">
                     <label htmlFor="detail-upload" className="cursor-pointer">
-                      <span className="mt-2 block text-sm font-medium text-gray-900">
-                        Detail View
-                      </span>
-                      <span className="mt-1 block text-xs text-gray-500">
-                        PNG, JPG up to 10MB
-                      </span>
+                      <span className="mt-2 block text-sm font-medium text-gray-900">Detail</span>
                     </label>
                     <input
                       id="detail-upload"
@@ -457,42 +425,10 @@ export default function AdminNewProductPage() {
                     >
                       <MdClose className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MdCheckCircle className="w-4 h-4 text-green-500" />
-                      <span className="text-xs text-green-600">Uploaded successfully</span>
-                    </div>
                   </div>
                 )}
               </div>
             </div>
-          </div>
-
-          {/* Image Guidelines */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-            <h4 className="text-md font-semibold text-amber-900 mb-3">📸 Image Guidelines</h4>
-            <div className="space-y-3 text-sm text-amber-800">
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <strong>Front View:</strong> Main product image showing the t-shirt front design clearly
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <strong>Back View:</strong> Shows the back design/print of the t-shirt
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <strong>Detail View:</strong> Close-up of design details, fabric texture, or print quality
-                </div>
-              </div>
-            </div>
-            <p className="mt-4 text-xs text-amber-700 bg-amber-100 p-3 rounded-lg">
-              💡 <strong>Tip:</strong> Use high-resolution images (at least 800x800px) for best quality. Images are automatically optimized and converted to WebP format.
-            </p>
           </div>
         </div>
       </form>

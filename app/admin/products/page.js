@@ -11,6 +11,31 @@ export default function AdminProductsPage() {
   const { products, loading, error, refetch, deleteProduct } = useAdminProducts();
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [query, setQuery] = useState('');
+
+  // Custom confirmation using react-hot-toast
+  const confirmAction = (message) => new Promise((resolve) => {
+    const toastId = toast.custom((t) => (
+      <div className={`max-w-sm w-full bg-white border border-gray-200 rounded-xl shadow-lg p-4 ${t.visible ? 'animate-enter' : 'animate-leave'}`}>
+        <div className="text-gray-900 font-medium">Confirm action</div>
+        <div className="text-gray-700 text-sm mt-1">{message}</div>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => { toast.dismiss(toastId); resolve(true); }}
+            className="px-3 py-1.5 text-sm rounded-md bg-red-600 hover:bg-red-700 text-white"
+          >
+            Confirm
+          </button>
+          <button
+            onClick={() => { toast.dismiss(toastId); resolve(false); }}
+            className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-900 text-sm hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  });
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -19,9 +44,8 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (productId, productName) => {
-    if (!confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
-      return;
-    }
+    const ok = await confirmAction(`Are you sure you want to delete "${productName}"? This action cannot be undone.`);
+    if (!ok) return;
 
     setDeleteLoading(productId);
     const result = await deleteProduct(productId, productName);
@@ -116,7 +140,7 @@ export default function AdminProductsPage() {
 
       {/* Products Table */}
       <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 gap-4">
           <h2 className="font-display text-heading-lg text-gray-900">All Products</h2>
           <div className="flex items-center gap-3">
             <button
@@ -132,6 +156,15 @@ export default function AdminProductsPage() {
             </Link>
           </div>
         </div>
+        <div className="mb-4">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by product name"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+          />
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -145,7 +178,11 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {(query.trim() ? products.filter(p => (p.name || '').toLowerCase().includes(query.trim().toLowerCase())) : products).length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-6 text-center text-gray-600">No results found</td>
+                </tr>
+              ) : (query.trim() ? products.filter(p => (p.name || '').toLowerCase().includes(query.trim().toLowerCase())) : products).map((p) => (
                 <tr key={p._id || p.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-3">

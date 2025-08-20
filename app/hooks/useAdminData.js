@@ -41,13 +41,15 @@ export function useAdminStats() {
       ]);
 
       const products = productsData.items || [];
-      const orders = ordersData.orders || [];
+      const orders = ordersData.items || [];
 
+      const totalRevenue = orders.reduce((sum, o) => sum + (o.totals?.total || 0), 0);
       const newStats = {
         totalProducts: products.length,
         totalOrders: orders.length,
         newProducts: products.filter(p => p.isNew).length,
-        saleProducts: products.filter(p => p.discount && p.discount > 0).length
+        saleProducts: products.filter(p => p.discount && p.discount > 0).length,
+        revenue: totalRevenue,
       };
 
       // Cache the results

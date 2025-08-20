@@ -40,18 +40,20 @@ export default function ProductCard({ product }) {
     return null;
   }
 
-  const discountPercentage = originalPrice && price 
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
-    : discount;
+  const unitPrice = Number(price) || 0;
+  const originalPriceNum = typeof originalPrice === 'number' ? originalPrice : Number(originalPrice) || 0;
+  const discountPercentage = originalPriceNum && unitPrice 
+    ? Math.round(((originalPriceNum - unitPrice) / originalPriceNum) * 100)
+    : (typeof discount === 'number' ? discount : Number(discount) || 0);
   const hasDiscount = Number(discountPercentage) > 0;
 
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col h-full w-full min-h-0"
+      transition={{ duration: 0.4 }}
+      whileHover={{ y: -6, scale: 1.01 }}
+      className="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-300 overflow-hidden flex flex-col h-full w-full min-h-0 focus-within:ring-2 focus-within:ring-black/10"
     >
       {/* Clickable Link Area */}
       <Link href={`/product/${productId}`} className="block flex-1 w-full">
@@ -67,7 +69,8 @@ export default function ProductCard({ product }) {
               <img
                 src={frontImage}
                 alt={name}
-                className="w-full h-full object-cover object-center"
+                loading="lazy"
+                className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
@@ -87,24 +90,27 @@ export default function ProductCard({ product }) {
               <img
                 src={backImage}
                 alt={`${name} - back view`}
+                loading="lazy"
                 className="w-full h-full object-cover object-center"
               />
             </div>
           )}
 
           {/* Badges */}
-          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex flex-col gap-1 sm:gap-2">
-            {isNew && (
-              <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                NEW
-              </span>
-            )}
-            {hasDiscount && (
-              <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                SALE
-              </span>
-            )}
-          </div>
+          {(isNew || hasDiscount) && (
+            <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex items-center gap-2">
+              {isNew && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-black text-white">
+                  New
+                </span>
+              )}
+              {hasDiscount && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-gray-900 text-white">
+                  Sale
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Quick Actions */}
           <div className={`absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1 sm:gap-2 transition-all duration-300 ${
@@ -116,8 +122,9 @@ export default function ProductCard({ product }) {
                 e.stopPropagation();
                 router.push(`/product/${productId}`);
               }}
-              className="bg-white p-1.5 sm:p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors"
+              className="bg-white p-1.5 sm:p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-black/20"
               title="Quick View"
+              aria-label={`Open ${name}`}
             >
               <AiOutlineEye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
             </button>
@@ -128,27 +135,32 @@ export default function ProductCard({ product }) {
         <div className="p-3 sm:p-4">
           {/* Categories */}
           <div className="flex items-center gap-1 sm:gap-2 mb-2">
-            <span className="text-xs bg-black text-white px-2 py-1 rounded">
+            <span className="text-[10px] sm:text-xs bg-black text-white px-2 py-1 rounded">
               {anime}
             </span>
-            <span className="text-xs bg-gray-200 text-black px-2 py-1 rounded">
+            <span className="text-[10px] sm:text-xs bg-gray-200 text-black px-2 py-1 rounded">
               {formatCategoryLabel(category)}
             </span>
           </div>
 
           {/* Product Name */}
-          <h3 className="font-display text-sm sm:text-heading-md text-gray-900 mb-2 sm:mb-3 group-hover:text-black transition-colors duration-300 leading-tight">
+          <h3 className="font-display text-base sm:text-lg md:text-xl text-gray-900 mb-2 sm:mb-3 group-hover:text-black transition-colors duration-300 leading-tight line-clamp-2" title={name}>
             {name}
           </h3>
 
           {/* Price */}
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <span className="text-sm sm:text-body-lg font-bold text-gray-900 tracking-wide">
-              ৳{price.toFixed(2)}
+            <span className="text-base sm:text-lg font-extrabold text-gray-900 tracking-wide">
+              ৳{unitPrice.toFixed(2)}
             </span>
-            {originalPrice && (
-              <span className="text-xs sm:text-body-sm text-gray-500 line-through">
-                ৳{originalPrice.toFixed(2)}
+            {originalPriceNum > 0 && (
+              <span className="text-xs sm:text-sm text-gray-500 line-through">
+                ৳{originalPriceNum.toFixed(2)}
+              </span>
+            )}
+            {hasDiscount && (
+              <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px] font-semibold">
+                -{discountPercentage}%
               </span>
             )}
           </div>
@@ -166,7 +178,8 @@ export default function ProductCard({ product }) {
             addToCart(product, defaultSize, 1);
             toast.success(`Added 1 × ${name} (${defaultSize}) to cart`);
           }}
-          className="w-full bg-black text-white py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 tracking-wide text-sm sm:text-body-sm"
+          aria-label={`Add ${name} to cart`}
+          className="w-full bg-black text-white py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-black/20"
         >
           Add to Cart
         </button>
