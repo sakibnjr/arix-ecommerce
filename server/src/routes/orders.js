@@ -3,12 +3,13 @@ import { customAlphabet } from 'nanoid';
 import Order from '../models/Order.js';
 import { z } from 'zod';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { requireAdmin } from '../utils/requireAdmin.js';
 
 const router = Router();
 const genId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6);
 
 // GET /api/orders (list)
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', requireAdmin, asyncHandler(async (req, res) => {
   const { status, limit = 50 } = req.query;
   const q = {};
   if (status) q.status = status;
@@ -64,7 +65,7 @@ router.get('/:orderNo', asyncHandler(async (req, res) => {
 
 // PATCH /api/orders/:orderNo (update status)
 const statusSchema = z.object({ status: z.enum(['placed', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']) });
-router.patch('/:orderNo', asyncHandler(async (req, res) => {
+router.patch('/:orderNo', requireAdmin, asyncHandler(async (req, res) => {
   const parsed = statusSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const doc = await Order.findOneAndUpdate(

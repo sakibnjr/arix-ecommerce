@@ -113,7 +113,7 @@ export default function AdminSlidersPage() {
     data.append('file', file);
     try {
       setUploading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/uploads?folder=arix/sliders`, {
+      const res = await fetch(`/api/admin/uploads?folder=arix/sliders`, {
         method: 'POST',
         body: data,
       });

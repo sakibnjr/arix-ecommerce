@@ -2,6 +2,7 @@ import { Router } from 'express';
 import Product from '../models/Product.js';
 import { z } from 'zod';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { requireAdmin } from '../utils/requireAdmin.js';
 
 const router = Router();
 
@@ -74,7 +75,7 @@ const productSchema = z.object({
   discount: z.number().min(0).max(100).nullable().optional(),
 });
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAdmin, asyncHandler(async (req, res) => {
   const parsed = productSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const doc = await Product.create(parsed.data);
@@ -82,7 +83,7 @@ router.post('/', asyncHandler(async (req, res) => {
 }));
 
 // PUT /api/products/:id
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', requireAdmin, asyncHandler(async (req, res) => {
   const { id } = req.params;
   
   // Validate ObjectId format
@@ -98,7 +99,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
 }));
 
 // DELETE /api/products/:id
-router.delete('/:id', asyncHandler(async (req, res) => {
+router.delete('/:id', requireAdmin, asyncHandler(async (req, res) => {
   const { id } = req.params;
   
   // Validate ObjectId format

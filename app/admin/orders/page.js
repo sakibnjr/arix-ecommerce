@@ -15,7 +15,7 @@ export default function AdminOrdersPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_BASE + '/api/orders');
+      const res = await fetch('/api/admin/orders');
       const data = await res.json();
       setOrders(data.items || []);
     } catch (e) {
@@ -29,7 +29,7 @@ export default function AdminOrdersPage() {
 
   const updateStatus = async (orderNo, status) => {
     try {
-      await fetch(process.env.NEXT_PUBLIC_API_BASE + '/api/orders/' + orderNo, {
+      await fetch('/api/admin/orders/' + orderNo, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

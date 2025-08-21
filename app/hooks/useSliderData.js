@@ -22,7 +22,7 @@ export function useSliderData() {
       setLoading(true);
       setError(null);
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders/all`);
+      const res = await fetch(`/api/admin/sliders`);
       if (!res.ok) {
         throw new Error('Failed to fetch sliders');
       }
@@ -41,7 +41,7 @@ export function useSliderData() {
 
   const createSlider = useCallback(async (sliderData) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders`, {
+      const res = await fetch(`/api/admin/sliders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sliderData)
@@ -61,7 +61,7 @@ export function useSliderData() {
 
   const updateSlider = useCallback(async (id, sliderData) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders/${id}`, {
+      const res = await fetch(`/api/admin/sliders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sliderData)
@@ -81,7 +81,7 @@ export function useSliderData() {
 
   const deleteSlider = useCallback(async (id) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders/${id}`, {
+      const res = await fetch(`/api/admin/sliders/${id}`, {
         method: 'DELETE'
       });
 
@@ -103,7 +103,7 @@ export function useSliderData() {
         order: index
       }));
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders/reorder`, {
+      const res = await fetch(`/api/admin/sliders/reorder`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sliders: reorderData })

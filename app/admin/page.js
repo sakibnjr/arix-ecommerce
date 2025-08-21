@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { 
   MdShoppingCart, 
@@ -19,11 +20,28 @@ import { useAdminStats } from '../hooks/useAdminData';
 export default function AdminHome() {
   const { stats, loading, error, lastUpdated, refetch } = useAdminStats();
   const [refreshing, setRefreshing] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+  };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to logout');
+      toast.success('Logged out');
+      setTimeout(() => {
+        window.location.href = '/admin/login';
+      }, 300);
+    } catch (e) {
+      toast.error('Logout failed');
+    } finally {
+      setLoggingOut(false);
+    }
   };
 
   if (loading) {
@@ -68,14 +86,24 @@ export default function AdminHome() {
                 </p>
               )}
             </div>
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors disabled:opacity-50 backdrop-blur-sm"
-              title="Refresh data"
-            >
-              <MdRefresh className={`w-6 h-6 ${refreshing ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors disabled:opacity-50 backdrop-blur-sm"
+                title="Refresh data"
+              >
+                <MdRefresh className={`w-6 h-6 ${refreshing ? 'animate-spin' : ''}`} />
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors disabled:opacity-50 backdrop-blur-sm text-sm"
+                title="Logout"
+              >
+                {loggingOut ? 'Logging out...' : 'Logout'}
+              </button>
+            </div>
           </div>
         </div>
         

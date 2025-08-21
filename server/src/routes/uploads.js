@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { requireAdmin } from '../utils/requireAdmin.js';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ const upload = multer({
 });
 
 // POST /api/uploads (field: file)
-router.post('/', upload.single('file'), asyncHandler(async (req, res) => {
+router.post('/', requireAdmin, upload.single('file'), asyncHandler(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }

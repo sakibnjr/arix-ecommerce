@@ -114,7 +114,7 @@ export default function EditProductPage() {
     const formData = new FormData();
     formData.append('file', file);
     
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/uploads?folder=products`, {
+    const res = await fetch(`/api/admin/uploads?folder=products`, {
       method: 'POST',
       body: formData,
     });
@@ -152,7 +152,7 @@ export default function EditProductPage() {
         ...(Object.keys(images).length > 0 && { images }),
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products/${productId}`, {
+      const res = await fetch(`/api/admin/products/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

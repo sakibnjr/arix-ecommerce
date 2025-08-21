@@ -99,7 +99,7 @@ export default function AdminNewProductPage() {
         discount: form.discount ? Number(form.discount) : undefined,
         ...(Object.keys(images).length > 0 && { images }),
       };
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`, {
+      const res = await fetch(`/api/admin/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -122,7 +122,7 @@ export default function AdminNewProductPage() {
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/uploads?folder=products`, {
+    const res = await fetch(`/api/admin/uploads?folder=products`, {
       method: 'POST',
       body: formData,
     });

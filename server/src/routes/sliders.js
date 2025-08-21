@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import Slider from '../models/Slider.js';
 import { z } from 'zod';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { requireAdmin } from '../utils/requireAdmin.js';
 
 const router = Router();
 
@@ -25,7 +26,7 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // GET /api/sliders/all - Get all sliders (admin use)
-router.get('/all', asyncHandler(async (req, res) => {
+router.get('/all', requireAdmin, asyncHandler(async (req, res) => {
   const sliders = await Slider.find()
     .sort({ order: 1 })
     .lean();
@@ -49,7 +50,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 // POST /api/sliders - Create new slider
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAdmin, asyncHandler(async (req, res) => {
   const parsed = sliderSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.flatten() });
@@ -60,7 +61,7 @@ router.post('/', asyncHandler(async (req, res) => {
 }));
 
 // PUT /api/sliders/reorder - Reorder multiple sliders (must be declared before /:id PUT)
-router.put('/reorder', asyncHandler(async (req, res) => {
+router.put('/reorder', requireAdmin, asyncHandler(async (req, res) => {
   const { sliders } = req.body;
   
   if (!Array.isArray(sliders)) {
@@ -76,7 +77,7 @@ router.put('/reorder', asyncHandler(async (req, res) => {
 }));
 
 // PUT /api/sliders/:id - Update slider
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', requireAdmin, asyncHandler(async (req, res) => {
   const { id } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -97,7 +98,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
 }));
 
 // DELETE /api/sliders/:id - Delete slider
-router.delete('/:id', asyncHandler(async (req, res) => {
+router.delete('/:id', requireAdmin, asyncHandler(async (req, res) => {
   const { id } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(id)) {

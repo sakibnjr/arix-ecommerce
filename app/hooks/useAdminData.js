@@ -32,7 +32,7 @@ export function useAdminStats() {
       // Load products and orders in parallel
       const [productsRes, ordersRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`),
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/orders`)
+        fetch(`/api/admin/orders`)
       ]);
 
       const [productsData, ordersData] = await Promise.all([
@@ -110,7 +110,7 @@ export function useAdminProducts() {
 
   const deleteProduct = useCallback(async (productId, productName) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products/${productId}`, {
+      const res = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE',
       });
       
