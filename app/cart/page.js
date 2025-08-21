@@ -105,8 +105,18 @@ export default function CartPage() {
                     <div key={`${item.id}-${item.size}`} className="p-6">
                       <div className="flex items-start space-x-4">
                         {/* Product Image */}
-                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <AiFillStar className="w-8 h-8 text-gray-400" />
+                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                          {item.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <AiFillStar className="w-8 h-8 text-gray-400" />
+                          )}
                         </div>
 
                         {/* Product Info */}
