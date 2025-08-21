@@ -2,6 +2,7 @@ import HeroSlider from './components/HeroSlider';
 import CategoriesSection from './components/CategoriesSection';
 import AnimeCategoriesSection from './components/AnimeCategoriesSection';
 import ProductsSection from './components/ProductsSection';
+import TestimonialsMarquee from './components/TestimonialsMarquee';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <ProductsSection />
         <CategoriesSection />
         <AnimeCategoriesSection />
+        <TestimonialsMarquee />
       </main>
     </div>
   );

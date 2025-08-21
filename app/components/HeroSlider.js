@@ -46,7 +46,7 @@ export default function HeroSlider() {
     
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 2000);
+    }, 4000);
     
     return () => clearInterval(timer);
   }, [paused, slides.length]);
@@ -75,6 +75,8 @@ export default function HeroSlider() {
       className="relative isolate overflow-hidden bg-black text-white"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
     >
       <div className="relative h-[26rem] md:h-[32rem] lg:h-[36rem] xl:h-[40rem]">
         {slides.map((s, i) => (
@@ -88,7 +90,7 @@ export default function HeroSlider() {
           <button
             onClick={prev}
             aria-label="Previous slide"
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 backdrop-blur px-3 py-3 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+            className="hidden md:inline-flex absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/5 backdrop-blur px-3 py-3 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40 z-10"
           >
             <HiChevronLeft className="h-5 w-5" />
           </button>
@@ -96,12 +98,12 @@ export default function HeroSlider() {
           <button
             onClick={next}
             aria-label="Next slide"
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 backdrop-blur px-3 py-3 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+            className="hidden md:inline-flex absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/5 backdrop-blur px-3 py-3 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40 z-10"
           >
             <HiChevronRight className="h-5 w-5" />
           </button>
 
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -130,12 +132,12 @@ function Slide({ active, slide, index, total }) {
       aria-hidden={!active}
     >
       <div className="relative mx-auto h-full max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
-        <div className="order-2 lg:order-1">
-          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight">
+        <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left px-4 sm:px-6">
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight max-w-xl">
             {slide.title}
           </h1>
           {slide.description && (
-            <p className="mt-4 max-w-xl text-sm md:text-base text-white/70">
+            <p className="mt-4 max-w-xl text-sm md:text-base text-white/70 mx-auto lg:mx-0">
               {slide.description}
             </p>
           )}

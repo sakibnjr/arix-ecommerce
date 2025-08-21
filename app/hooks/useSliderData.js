@@ -145,7 +145,7 @@ export function useHomepageSliders() {
     
     const loadSliders = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/sliders`);
+        const res = await fetch(`/api/sliders`, { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch sliders');
         
         const data = await res.json();
