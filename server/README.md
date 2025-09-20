@@ -9,7 +9,10 @@ Node.js + Express + MongoDB backend for Arix storefront.
 ```
 MONGODB_URI=mongodb://127.0.0.1:27017/arix
 PORT=4000
-CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+CORS_ORIGIN=http://localhost:3000,https://arix-ecommerce.vercel.app
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password
+JWT_SECRET=your_jwt_secret
 ```
 
 2. Install deps and run:
