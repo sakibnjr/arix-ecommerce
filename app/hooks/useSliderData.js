@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import adminCache from '../utils/adminCache';
+import { useState, useEffect, useCallback } from "react";
+import adminCache from "../utils/adminCache";
 
 export function useSliderData() {
   const [sliders, setSliders] = useState([]);
@@ -7,8 +7,8 @@ export function useSliderData() {
   const [error, setError] = useState(null);
 
   const loadSliders = useCallback(async (forceRefresh = false) => {
-    const cacheKey = 'admin-sliders';
-    
+    const cacheKey = "admin-sliders";
+
     if (!forceRefresh) {
       const cachedData = adminCache.get(cacheKey);
       if (cachedData) {
@@ -21,15 +21,15 @@ export function useSliderData() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const res = await fetch(`/api/admin/sliders`);
       if (!res.ok) {
-        throw new Error('Failed to fetch sliders');
+        throw new Error("Failed to fetch sliders");
       }
-      
+
       const data = await res.json();
       const slidersData = data.items || [];
-      
+
       adminCache.set(cacheKey, slidersData);
       setSliders(slidersData);
     } catch (err) {
@@ -42,17 +42,17 @@ export function useSliderData() {
   const createSlider = useCallback(async (sliderData) => {
     try {
       const res = await fetch(`/api/admin/sliders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sliderData)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sliderData),
       });
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error?.message || 'Failed to create slider');
+        throw new Error(error.error?.message || "Failed to create slider");
       }
 
-      adminCache.invalidate('admin-sliders');
+      adminCache.invalidate("admin-sliders");
       return await res.json();
     } catch (err) {
       throw err;
@@ -62,17 +62,17 @@ export function useSliderData() {
   const updateSlider = useCallback(async (id, sliderData) => {
     try {
       const res = await fetch(`/api/admin/sliders/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sliderData)
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sliderData),
       });
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error?.message || 'Failed to update slider');
+        throw new Error(error.error?.message || "Failed to update slider");
       }
 
-      adminCache.invalidate('admin-sliders');
+      adminCache.invalidate("admin-sliders");
       return await res.json();
     } catch (err) {
       throw err;
@@ -82,14 +82,14 @@ export function useSliderData() {
   const deleteSlider = useCallback(async (id) => {
     try {
       const res = await fetch(`/api/admin/sliders/${id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       if (!res.ok) {
-        throw new Error('Failed to delete slider');
+        throw new Error("Failed to delete slider");
       }
 
-      adminCache.invalidate('admin-sliders');
+      adminCache.invalidate("admin-sliders");
       return true;
     } catch (err) {
       throw err;
@@ -100,20 +100,20 @@ export function useSliderData() {
     try {
       const reorderData = newOrder.map((slider, index) => ({
         id: slider._id,
-        order: index
+        order: index,
       }));
 
       const res = await fetch(`/api/admin/sliders/reorder`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sliders: reorderData })
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sliders: reorderData }),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to reorder sliders');
+        throw new Error("Failed to reorder sliders");
       }
 
-      adminCache.invalidate('admin-sliders');
+      adminCache.invalidate("admin-sliders");
       return await res.json();
     } catch (err) {
       throw err;
@@ -132,7 +132,7 @@ export function useSliderData() {
     createSlider,
     updateSlider,
     deleteSlider,
-    reorderSliders
+    reorderSliders,
   };
 }
 
@@ -142,18 +142,21 @@ export function useHomepageSliders() {
 
   useEffect(() => {
     let active = true;
-    
+
     const loadSliders = async () => {
       try {
-        const res = await fetch(`/api/sliders`, { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to fetch sliders');
-        
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/api/sliders`,
+          { cache: "no-store" }
+        );
+        if (!res.ok) throw new Error("Failed to fetch sliders");
+
         const data = await res.json();
         if (active) {
           setSliders(data.items || []);
         }
       } catch (error) {
-        console.error('Failed to load homepage sliders:', error);
+        console.error("Failed to load homepage sliders:", error);
         if (active) {
           setSliders([]);
         }
@@ -165,7 +168,9 @@ export function useHomepageSliders() {
     };
 
     loadSliders();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   return { sliders, loading };

@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import ProductCard from '../components/ProductCard';
-import Link from 'next/link';
-import { HiChevronRight, HiFilter, HiX } from 'react-icons/hi';
+import { useState, useEffect } from "react";
+import ProductCard from "../components/ProductCard";
+import Link from "next/link";
+import { HiChevronRight, HiFilter, HiX } from "react-icons/hi";
 
 export default function AllProductsPage() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedAnime, setSelectedAnime] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedAnime, setSelectedAnime] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
   const [showFilters, setShowFilters] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Handle URL parameters for direct category access
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
-      const categoryParam = urlParams.get('category');
-      const searchParam = urlParams.get('search');
-      
+      const categoryParam = urlParams.get("category");
+      const searchParam = urlParams.get("search");
+
       if (categoryParam) {
         setSelectedCategory(categoryParam);
       }
@@ -35,28 +35,45 @@ export default function AllProductsPage() {
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/api/products`
+        );
         const data = await res.json();
         if (active) setAllProducts(data.items || []);
+      } catch (error) {
+        console.error("Failed to load products:", error);
+        if (active) setAllProducts([]);
       } finally {
         if (active) setLoading(false);
       }
     })();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Get unique categories and anime series
-  const categoryValues = [...new Set(allProducts.map(p => p.category))];
-  const categories = categoryValues.map(value => ({
+  const categoryValues = [...new Set(allProducts.map((p) => p.category))];
+  const categories = categoryValues.map((value) => ({
     value,
-    label: value === 'normal' ? 'Classic' : value === 'drop-shoulder' ? 'Drop Shoulder' : value
+    label:
+      value === "normal"
+        ? "Classic"
+        : value === "drop-shoulder"
+        ? "Drop Shoulder"
+        : value,
   }));
-  const animeList = [...new Set(allProducts.map(p => p.anime))];
+  const animeList = [...new Set(allProducts.map((p) => p.anime))];
 
   // Filter products
-  const filteredProducts = allProducts.filter(product => {
-    const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
-    const animeMatch = selectedAnime === 'all' || product.anime === selectedAnime;
-    const searchMatch = !searchQuery || 
+  const filteredProducts = allProducts.filter((product) => {
+    const categoryMatch =
+      selectedCategory === "all" || product.category === selectedCategory;
+    const animeMatch =
+      selectedAnime === "all" || product.anime === selectedAnime;
+    const searchMatch =
+      !searchQuery ||
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.anime.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.category.toLowerCase().includes(searchQuery.toLowerCase());
@@ -66,13 +83,13 @@ export default function AllProductsPage() {
   // Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
-      case 'price-low':
+      case "price-low":
         return a.price - b.price;
-      case 'price-high':
+      case "price-high":
         return b.price - a.price;
-      case 'name':
+      case "name":
         return a.name.localeCompare(b.name);
-      case 'anime':
+      case "anime":
         return a.anime.localeCompare(b.anime);
       default:
         return 0;
@@ -80,22 +97,24 @@ export default function AllProductsPage() {
   });
 
   const clearFilters = () => {
-    setSelectedCategory('all');
-    setSelectedAnime('all');
-    setSortBy('name');
-    setSearchQuery('');
+    setSelectedCategory("all");
+    setSelectedAnime("all");
+    setSortBy("name");
+    setSearchQuery("");
   };
 
   return (
     <div className="min-h-screen bg-white">
-      
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
-                <Link href="/" className="text-gray-500 hover:text-black transition-colors">
+                <Link
+                  href="/"
+                  className="text-gray-500 hover:text-black transition-colors"
+                >
                   Home
                 </Link>
               </li>
@@ -113,9 +132,12 @@ export default function AllProductsPage() {
       {/* Page Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">All Products</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            All Products
+          </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover our complete collection of premium anime t-shirts featuring your favorite characters and series.
+            Discover our complete collection of premium anime t-shirts featuring
+            your favorite characters and series.
           </p>
         </div>
 
@@ -133,42 +155,52 @@ export default function AllProductsPage() {
           </div>
 
           {/* Desktop Filters */}
-          <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
+          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search removed: search is available from Header */}
-              
+
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900"
                 >
                   <option value="all">All Categories</option>
-                  {categories.map(category => (
-                    <option key={category.value} value={category.value}>{category.label}</option>
+                  {categories.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Anime Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Anime Series</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Anime Series
+                </label>
                 <select
                   value={selectedAnime}
                   onChange={(e) => setSelectedAnime(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900"
                 >
                   <option value="all">All Anime</option>
-                  {animeList.map(anime => (
-                    <option key={anime} value={anime}>{anime}</option>
+                  {animeList.map((anime) => (
+                    <option key={anime} value={anime}>
+                      {anime}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Clear Filters */}
-              {(selectedCategory !== 'all' || selectedAnime !== 'all' || searchQuery) && (
+              {(selectedCategory !== "all" ||
+                selectedAnime !== "all" ||
+                searchQuery) && (
                 <div className="flex items-end">
                   <button
                     onClick={clearFilters}
@@ -184,7 +216,9 @@ export default function AllProductsPage() {
 
           {/* Sort */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Sort by
+            </label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -203,8 +237,8 @@ export default function AllProductsPage() {
           <p className="text-gray-600">
             Showing {sortedProducts.length} of {allProducts.length} products
             {searchQuery && ` matching "${searchQuery}"`}
-            {selectedCategory !== 'all' && ` in ${selectedCategory}`}
-            {selectedAnime !== 'all' && ` from ${selectedAnime}`}
+            {selectedCategory !== "all" && ` in ${selectedCategory}`}
+            {selectedAnime !== "all" && ` from ${selectedAnime}`}
           </p>
         </div>
 
@@ -212,7 +246,10 @@ export default function AllProductsPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+              <div
+                key={i}
+                className="h-64 bg-gray-100 rounded-xl animate-pulse"
+              />
             ))}
           </div>
         ) : sortedProducts.length > 0 ? (
@@ -224,18 +261,29 @@ export default function AllProductsPage() {
         ) : (
           <div className="text-center py-16">
             <div className="text-gray-500 mb-4">
-              <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-6m-10 0H4" />
+              <svg
+                className="w-16 h-16 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-6m-10 0H4"
+                />
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchQuery ? `No products found for "${searchQuery}"` : 'No products found'}
+              {searchQuery
+                ? `No products found for "${searchQuery}"`
+                : "No products found"}
             </h3>
             <p className="text-gray-500 mb-4">
-              {searchQuery 
-                ? 'Try different keywords or adjust your filters to see more products.'
-                : 'Try adjusting your filters to see more products.'
-              }
+              {searchQuery
+                ? "Try different keywords or adjust your filters to see more products."
+                : "Try adjusting your filters to see more products."}
             </p>
             <button
               onClick={clearFilters}
@@ -245,10 +293,7 @@ export default function AllProductsPage() {
             </button>
           </div>
         )}
-
-
       </div>
-      
     </div>
   );
 }

@@ -17,6 +17,11 @@ export default function ProductsSection() {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/api/products`
         );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
         const data = await res.json();
 
         if (active) {
@@ -24,6 +29,7 @@ export default function ProductsSection() {
           setItems(products.slice(0, 4));
         }
       } catch (err) {
+        console.error("Failed to load products for homepage:", err);
         if (active) {
           setItems([]);
         }
