@@ -1,47 +1,62 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import CheckoutForm from '../components/CheckoutForm';
-import Link from 'next/link';
-import { useCart } from '../context/CartContext';
-import { HiChevronRight, HiX, HiPlus, HiMinus, HiShoppingBag } from 'react-icons/hi';
-import { AiFillStar } from 'react-icons/ai';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import CheckoutForm from "../components/CheckoutForm";
+import Link from "next/link";
+import { useCart } from "../context/CartContext";
+import {
+  HiChevronRight,
+  HiX,
+  HiPlus,
+  HiMinus,
+  HiShoppingBag,
+} from "react-icons/hi";
+import { AiFillStar } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 export default function CartPage() {
-  const { items, totalItems, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart();
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCart();
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
 
   const handleQuantityChange = (id, size, newQuantity) => {
     if (newQuantity <= 0) {
       removeFromCart(id, size);
-      toast.success('Item removed from cart');
+      toast.success("Item removed from cart");
     } else {
       updateQuantity(id, size, newQuantity);
-      toast.success('Quantity updated');
+      toast.success("Quantity updated");
     }
   };
 
   const handleRemoveItem = (id, size) => {
     removeFromCart(id, size);
-    toast.success('Item removed from cart');
+    toast.success("Item removed from cart");
   };
 
   const handleClearCart = () => {
     clearCart();
-    toast.success('Cart cleared');
+    toast.success("Cart cleared");
   };
 
   return (
     <div className="min-h-screen bg-white">
-      
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
-                <Link href="/" className="text-gray-500 hover:text-black transition-colors">
+                <Link
+                  href="/"
+                  className="text-gray-500 hover:text-black transition-colors"
+                >
                   Home
                 </Link>
               </li>
@@ -59,7 +74,9 @@ export default function CartPage() {
       {/* Cart Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display text-display-md md:text-display-lg text-gray-900 mb-8 leading-tight">Shopping Cart</h1>
+          <h1 className="font-display text-display-md md:text-display-lg text-gray-900 mb-8 leading-tight">
+            Shopping Cart
+          </h1>
           {items.length > 0 && (
             <button
               onClick={handleClearCart}
@@ -75,9 +92,12 @@ export default function CartPage() {
           <div className="text-center py-16">
             <div className="mb-8">
               <HiShoppingBag className="w-24 h-24 mx-auto text-gray-300 mb-4" />
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h3>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                Your cart is empty
+              </h3>
               <p className="text-gray-500 mb-8">
-                Looks like you haven't added any anime t-shirts to your cart yet.
+                Looks like you haven&apos;t added any anime t-shirts to your
+                cart yet.
               </p>
               <Link
                 href="/"
@@ -96,10 +116,11 @@ export default function CartPage() {
               <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="font-display text-heading-lg text-gray-900">
-                    Cart Items ({totalItems} {totalItems === 1 ? 'item' : 'items'})
+                    Cart Items ({totalItems}{" "}
+                    {totalItems === 1 ? "item" : "items"})
                   </h2>
                 </div>
-                
+
                 <div className="divide-y divide-gray-200">
                   {items.map((item) => (
                     <div key={`${item.id}-${item.size}`} className="p-6">
@@ -124,7 +145,7 @@ export default function CartPage() {
                           <div className="flex items-start justify-between">
                             <div>
                               <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                                <Link 
+                                <Link
                                   href={`/product/${item.id}`}
                                   className="hover:text-gray-700 transition-colors"
                                 >
@@ -153,10 +174,12 @@ export default function CartPage() {
                                 )}
                               </div>
                             </div>
-                            
+
                             {/* Remove Button */}
                             <button
-                              onClick={() => handleRemoveItem(item.id, item.size)}
+                              onClick={() =>
+                                handleRemoveItem(item.id, item.size)
+                              }
                               className="text-gray-400 hover:text-red-600 transition-colors p-1"
                               title="Remove item"
                             >
@@ -168,7 +191,13 @@ export default function CartPage() {
                           <div className="flex items-center justify-between mt-4">
                             <div className="flex items-center border border-gray-300 rounded-lg bg-white">
                               <button
-                                onClick={() => handleQuantityChange(item.id, item.size, item.quantity - 1)}
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.size,
+                                    item.quantity - 1
+                                  )
+                                }
                                 className="p-2 hover:bg-gray-100 transition-colors text-gray-700 hover:text-gray-900"
                                 disabled={item.quantity <= 1}
                               >
@@ -178,13 +207,19 @@ export default function CartPage() {
                                 {item.quantity}
                               </span>
                               <button
-                                onClick={() => handleQuantityChange(item.id, item.size, item.quantity + 1)}
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.size,
+                                    item.quantity + 1
+                                  )
+                                }
                                 className="p-2 hover:bg-gray-100 transition-colors text-gray-700 hover:text-gray-900"
                               >
                                 <HiPlus className="w-4 h-4" />
                               </button>
                             </div>
-                            
+
                             <div className="text-right">
                               <div className="text-lg font-bold text-gray-900">
                                 ৳{(item.price * item.quantity).toFixed(2)}
@@ -216,12 +251,18 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white border border-gray-200 rounded-xl p-6 sticky top-24 shadow-sm">
-                <h2 className="font-display text-heading-lg text-gray-900 mb-6">Order Summary</h2>
-                
+                <h2 className="font-display text-heading-lg text-gray-900 mb-6">
+                  Order Summary
+                </h2>
+
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-body-md text-gray-700">Items ({totalItems})</span>
-                    <span className="font-semibold text-gray-900">৳{totalPrice.toFixed(2)}</span>
+                    <span className="text-body-md text-gray-700">
+                      Items ({totalItems})
+                    </span>
+                    <span className="font-semibold text-gray-900">
+                      ৳{totalPrice.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-body-md text-gray-700">Shipping</span>
@@ -229,7 +270,9 @@ export default function CartPage() {
                   </div>
                   <div className="border-t border-gray-300 pt-4">
                     <div className="flex justify-between">
-                      <span className="text-heading-lg font-semibold text-gray-900">Total</span>
+                      <span className="text-heading-lg font-semibold text-gray-900">
+                        Total
+                      </span>
                       <span className="text-heading-lg font-bold text-gray-900">
                         ৳{(totalPrice + 80).toFixed(2)}
                       </span>
@@ -249,16 +292,14 @@ export default function CartPage() {
                     Standard shipping: ৳80 for all orders
                   </p>
                 </div>
-
-
               </div>
             </div>
           </div>
         )}
       </div>
-      
+
       {/* Checkout Form Modal */}
-      <CheckoutForm 
+      <CheckoutForm
         isOpen={showCheckoutForm}
         onClose={() => setShowCheckoutForm(false)}
         orderType="cart"

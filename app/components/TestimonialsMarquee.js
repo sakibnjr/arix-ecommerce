@@ -44,7 +44,7 @@ function Row({ reversed = false }) {
             key={`${r.name}-${idx}`}
             className="min-w-[320px] sm:min-w-[380px] md:min-w-[440px] bg-white border border-gray-200 rounded-xl p-5 shadow-sm"
           >
-            <p className="text-gray-900">“{r.text}”</p>
+            <p className="text-gray-900">&ldquo;{r.text}&rdquo;</p>
             <p className="mt-2 text-sm text-gray-600">— {r.name}</p>
           </div>
         ))}

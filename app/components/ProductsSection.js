@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import ProductCard from './ProductCard';
-import { HiArrowRight } from 'react-icons/hi';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import ProductCard from "./ProductCard";
+import { HiArrowRight } from "react-icons/hi";
+import { motion } from "framer-motion";
 
 export default function ProductsSection() {
   const [items, setItems] = useState([]);
@@ -14,9 +14,11 @@ export default function ProductsSection() {
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/api/products`
+        );
         const data = await res.json();
-        
+
         if (active) {
           const products = data.items || [];
           setItems(products.slice(0, 4));
@@ -29,7 +31,9 @@ export default function ProductsSection() {
         if (active) setLoading(false);
       }
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
@@ -38,11 +42,11 @@ export default function ProductsSection() {
       <div className="absolute inset-0">
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-transparent to-gray-50/30" />
-        
+
         {/* Geometric accent elements */}
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-gradient-to-br from-black/5 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-tl from-black/5 to-transparent rounded-full blur-3xl" />
-        
+
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
       </div>
@@ -59,10 +63,12 @@ export default function ProductsSection() {
           {/* Subtle accent line */}
           <div className="inline-flex items-center gap-3 mb-3">
             <div className="w-6 h-px bg-black/20" />
-            <span className="text-xs font-medium text-black/60 tracking-widest uppercase">Featured</span>
+            <span className="text-xs font-medium text-black/60 tracking-widest uppercase">
+              Featured
+            </span>
             <div className="w-6 h-px bg-black/20" />
           </div>
-          
+
           <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 leading-tight">
             Curated Collection
           </h2>
@@ -86,7 +92,7 @@ export default function ProductsSection() {
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 h-72 sm:h-80 shadow-sm border border-gray-100">
                   {/* Animated shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-                  
+
                   {/* Placeholder content */}
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
                     <div className="space-y-3">
@@ -124,13 +130,26 @@ export default function ProductsSection() {
               className="col-span-full text-center py-12"
             >
               <div className="inline-flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full mb-4">
-                <svg className="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <svg
+                  className="w-7 h-7 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Products Available</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No Products Available
+              </h3>
               <p className="text-gray-600 max-w-md mx-auto text-sm">
-                We're currently updating our collection. Check back soon for new arrivals.
+                We&apos;re currently updating our collection. Check back soon
+                for new arrivals.
               </p>
             </motion.div>
           )}
@@ -147,7 +166,7 @@ export default function ProductsSection() {
           {/* Decorative elements */}
           <div className="relative inline-flex items-center">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent w-full h-px" />
-            
+
             <Link
               href="/products"
               className="relative bg-black text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-900 transition-all duration-300 inline-flex items-center tracking-wide text-base shadow-lg hover:shadow-xl hover:scale-105 transform group"
@@ -156,15 +175,18 @@ export default function ProductsSection() {
               <HiArrowRight className="w-4 h-5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
-          
         </motion.div>
       </div>
 
       {/* Custom CSS for shimmer animation */}
       <style jsx>{`
         @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
         }
       `}</style>
     </section>
