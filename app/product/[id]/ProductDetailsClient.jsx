@@ -140,12 +140,12 @@ export default function ProductDetailsClient({ product }) {
               </li>
               <li>
                 <Link
-                  href={`/anime/${product.anime
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
+                  href={`/anime/${
+                    product.anime?.toLowerCase().replace(/\s+/g, "-") || ""
+                  }`}
                   className="text-sm sm:text-base text-gray-500 hover:text-black transition-colors"
                 >
-                  {product.anime}
+                  {product.anime || "Unknown"}
                 </Link>
               </li>
               <li>

@@ -41,7 +41,6 @@ export default function AllProductsPage() {
         const data = await res.json();
         if (active) setAllProducts(data.items || []);
       } catch (error) {
-        console.error("Failed to load products:", error);
         if (active) setAllProducts([]);
       } finally {
         if (active) setLoading(false);

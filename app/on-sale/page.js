@@ -25,7 +25,6 @@ export default function OnSalePage() {
         const data = await res.json();
         if (active) setSaleProducts(data.items || []);
       } catch (error) {
-        console.error("Failed to load sale products:", error);
         if (active) setSaleProducts([]);
       } finally {
         if (active) setLoading(false);

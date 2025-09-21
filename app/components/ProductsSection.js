@@ -29,7 +29,6 @@ export default function ProductsSection() {
           setItems(products.slice(0, 4));
         }
       } catch (err) {
-        console.error("Failed to load products for homepage:", err);
         if (active) {
           setItems([]);
         }

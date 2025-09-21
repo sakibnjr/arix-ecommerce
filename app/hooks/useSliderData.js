@@ -146,13 +146,10 @@ export function useHomepageSliders() {
     const loadSliders = async () => {
       try {
         const apiBase = process.env.NEXT_PUBLIC_API_BASE;
-        console.log("Loading sliders from:", `${apiBase}/api/sliders`);
 
         const res = await fetch(`${apiBase}/api/sliders`, {
           cache: "no-store",
         });
-
-        console.log("Sliders API response status:", res.status);
 
         if (!res.ok) {
           throw new Error(
@@ -161,16 +158,12 @@ export function useHomepageSliders() {
         }
 
         const data = await res.json();
-        console.log("Sliders data received:", data);
 
         if (active) {
           const sliderItems = data.items || [];
-          console.log("Setting sliders:", sliderItems);
           setSliders(sliderItems);
         }
       } catch (error) {
-        console.error("Failed to load homepage sliders:", error);
-        console.error("API Base URL:", process.env.NEXT_PUBLIC_API_BASE);
         if (active) {
           setSliders([]);
         }

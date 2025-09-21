@@ -25,7 +25,6 @@ export default function NewArrivalsPage() {
         const data = await res.json();
         if (active) setNewProducts(data.items || []);
       } catch (error) {
-        console.error("Failed to load new products:", error);
         if (active) setNewProducts([]);
       } finally {
         if (active) setLoading(false);

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
-import { motion } from 'framer-motion';
-import { useCart } from '../context/CartContext';
-import toast from 'react-hot-toast';
-import { formatCategoryLabel } from '../utils/categoryFormatter';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AiFillStar, AiOutlineEye } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { useCart } from "../context/CartContext";
+import toast from "react-hot-toast";
+import { formatCategoryLabel } from "../utils/categoryFormatter";
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -24,7 +24,7 @@ export default function ProductCard({ product }) {
     anime,
     category,
     isNew = false,
-    discount = null
+    discount = null,
   } = product;
 
   // Extract images for display (front as main, back as hover)
@@ -36,19 +36,24 @@ export default function ProductCard({ product }) {
 
   // Don't render if no valid product ID
   if (!productId) {
-    console.warn('ProductCard: Missing product ID', product);
     return null;
   }
 
   const unitPrice = Number(price) || 0;
-  const originalPriceNum = typeof originalPrice === 'number' ? originalPrice : Number(originalPrice) || 0;
-  const discountPercentage = originalPriceNum && unitPrice 
-    ? Math.round(((originalPriceNum - unitPrice) / originalPriceNum) * 100)
-    : (typeof discount === 'number' ? discount : Number(discount) || 0);
+  const originalPriceNum =
+    typeof originalPrice === "number"
+      ? originalPrice
+      : Number(originalPrice) || 0;
+  const discountPercentage =
+    originalPriceNum && unitPrice
+      ? Math.round(((originalPriceNum - unitPrice) / originalPriceNum) * 100)
+      : typeof discount === "number"
+      ? discount
+      : Number(discount) || 0;
   const hasDiscount = Number(discountPercentage) > 0;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -58,7 +63,7 @@ export default function ProductCard({ product }) {
       {/* Clickable Link Area */}
       <Link href={`/product/${productId}`} className="block flex-1 w-full">
         {/* Image Container */}
-        <div 
+        <div
           className="relative aspect-square overflow-hidden bg-gray-100 w-full"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -84,9 +89,11 @@ export default function ProductCard({ product }) {
 
           {/* Hover Image (back view if available) */}
           {backImage && (
-            <div className={`absolute inset-0 transition-opacity duration-300 ${
-              isHovered ? 'opacity-100' : 'opacity-0'
-            }`}>
+            <div
+              className={`absolute inset-0 transition-opacity duration-300 ${
+                isHovered ? "opacity-100" : "opacity-0"
+              }`}
+            >
               <img
                 src={backImage}
                 alt={`${name} - back view`}
@@ -113,10 +120,14 @@ export default function ProductCard({ product }) {
           )}
 
           {/* Quick Actions */}
-          <div className={`absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1 sm:gap-2 transition-all duration-300 ${
-            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
-          }`}>
-            <button 
+          <div
+            className={`absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1 sm:gap-2 transition-all duration-300 ${
+              isHovered
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-2"
+            }`}
+          >
+            <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -144,7 +155,10 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Product Name */}
-          <h3 className="font-display text-base sm:text-lg md:text-xl text-gray-900 mb-2 sm:mb-3 group-hover:text-black transition-colors duration-300 leading-tight line-clamp-2" title={name}>
+          <h3
+            className="font-display text-base sm:text-lg md:text-xl text-gray-900 mb-2 sm:mb-3 group-hover:text-black transition-colors duration-300 leading-tight line-clamp-2"
+            title={name}
+          >
             {name}
           </h3>
 
@@ -170,11 +184,11 @@ export default function ProductCard({ product }) {
       {/* Interactive Elements (Outside Link) */}
       <div className="px-4 sm:px-6 pb-4 sm:pb-6 mt-auto">
         {/* Add to Cart Button */}
-        <button 
+        <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            const defaultSize = (product.sizes && product.sizes[0]) || 'M';
+            const defaultSize = (product.sizes && product.sizes[0]) || "M";
             addToCart(product, defaultSize, 1);
             toast.success(`Added 1 × ${name} (${defaultSize}) to cart`);
           }}

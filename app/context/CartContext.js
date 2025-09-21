@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import { createContext, useContext, useReducer, useEffect } from "react";
 
 // Cart Context
 const CartContext = createContext();
 
 // Cart Actions
 const CART_ACTIONS = {
-  ADD_ITEM: 'ADD_ITEM',
-  REMOVE_ITEM: 'REMOVE_ITEM',
-  UPDATE_QUANTITY: 'UPDATE_QUANTITY',
-  CLEAR_CART: 'CLEAR_CART',
-  LOAD_CART: 'LOAD_CART'
+  ADD_ITEM: "ADD_ITEM",
+  REMOVE_ITEM: "REMOVE_ITEM",
+  UPDATE_QUANTITY: "UPDATE_QUANTITY",
+  CLEAR_CART: "CLEAR_CART",
+  LOAD_CART: "LOAD_CART",
 };
 
 // Cart Reducer
@@ -21,7 +21,7 @@ function cartReducer(state, action) {
       const { product, size, quantity = 1 } = action.payload;
       const productId = product._id || product.id;
       const existingItemIndex = state.items.findIndex(
-        item => item.id === productId && item.size === size
+        (item) => item.id === productId && item.size === size
       );
 
       if (existingItemIndex > -1) {
@@ -34,8 +34,14 @@ function cartReducer(state, action) {
         return {
           ...state,
           items: updatedItems,
-          totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-          totalPrice: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+          totalItems: updatedItems.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          ),
+          totalPrice: updatedItems.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          ),
         };
       } else {
         // Add new item
@@ -48,14 +54,20 @@ function cartReducer(state, action) {
           anime: product.anime,
           category: product.category,
           size,
-          quantity
+          quantity,
         };
         const updatedItems = [...state.items, newItem];
         return {
           ...state,
           items: updatedItems,
-          totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-          totalPrice: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+          totalItems: updatedItems.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          ),
+          totalPrice: updatedItems.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          ),
         };
       }
     }
@@ -63,32 +75,39 @@ function cartReducer(state, action) {
     case CART_ACTIONS.REMOVE_ITEM: {
       const { id, size } = action.payload;
       const updatedItems = state.items.filter(
-        item => !(item.id === id && item.size === size)
+        (item) => !(item.id === id && item.size === size)
       );
       return {
         ...state,
         items: updatedItems,
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: updatedItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        ),
       };
     }
 
     case CART_ACTIONS.UPDATE_QUANTITY: {
       const { id, size, quantity } = action.payload;
       if (quantity <= 0) {
-        return cartReducer(state, { type: CART_ACTIONS.REMOVE_ITEM, payload: { id, size } });
+        return cartReducer(state, {
+          type: CART_ACTIONS.REMOVE_ITEM,
+          payload: { id, size },
+        });
       }
-      
-      const updatedItems = state.items.map(item =>
-        item.id === id && item.size === size
-          ? { ...item, quantity }
-          : item
+
+      const updatedItems = state.items.map((item) =>
+        item.id === id && item.size === size ? { ...item, quantity } : item
       );
       return {
         ...state,
         items: updatedItems,
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: updatedItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        ),
       };
     }
 
@@ -96,7 +115,7 @@ function cartReducer(state, action) {
       return {
         items: [],
         totalItems: 0,
-        totalPrice: 0
+        totalPrice: 0,
       };
 
     case CART_ACTIONS.LOAD_CART:
@@ -111,7 +130,7 @@ function cartReducer(state, action) {
 const initialState = {
   items: [],
   totalItems: 0,
-  totalPrice: 0
+  totalPrice: 0,
 };
 
 // Cart Provider
@@ -120,41 +139,39 @@ export function CartProvider({ children }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('arix-cart');
+    const savedCart = localStorage.getItem("arix-cart");
     if (savedCart) {
       try {
         const cartData = JSON.parse(savedCart);
         dispatch({ type: CART_ACTIONS.LOAD_CART, payload: cartData });
-      } catch (error) {
-        console.error('Failed to load cart from localStorage:', error);
-      }
+      } catch (error) {}
     }
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('arix-cart', JSON.stringify(state));
+    localStorage.setItem("arix-cart", JSON.stringify(state));
   }, [state]);
 
   // Cart actions
   const addToCart = (product, size, quantity = 1) => {
     dispatch({
       type: CART_ACTIONS.ADD_ITEM,
-      payload: { product, size, quantity }
+      payload: { product, size, quantity },
     });
   };
 
   const removeFromCart = (id, size) => {
     dispatch({
       type: CART_ACTIONS.REMOVE_ITEM,
-      payload: { id, size }
+      payload: { id, size },
     });
   };
 
   const updateQuantity = (id, size, quantity) => {
     dispatch({
       type: CART_ACTIONS.UPDATE_QUANTITY,
-      payload: { id, size, quantity }
+      payload: { id, size, quantity },
     });
   };
 
@@ -163,7 +180,7 @@ export function CartProvider({ children }) {
   };
 
   const getCartItem = (id, size) => {
-    return state.items.find(item => item.id === id && item.size === size);
+    return state.items.find((item) => item.id === id && item.size === size);
   };
 
   const value = {
@@ -172,21 +189,17 @@ export function CartProvider({ children }) {
     removeFromCart,
     updateQuantity,
     clearCart,
-    getCartItem
+    getCartItem,
   };
 
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 // Custom hook to use cart context
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error("useCart must be used within a CartProvider");
   }
   return context;
 }
