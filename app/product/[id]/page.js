@@ -1,21 +1,33 @@
-import { use } from "react";
 import Link from "next/link";
 import ProductDetailsClient from "./ProductDetailsClient";
 
-export default function ProductDetailsPage({ params }) {
-  const { id } = use(params);
-  // server fetch product by id
-  // Note: API uses Mongo IDs; fallback to numeric id if present
-  // We'll fetch directly from API using fetch in server component
-  // Next.js supports Request in server components
-  // eslint-disable-next-line no-undef
-  const res = use(
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/products/${id}`, {
+async function getProduct(id) {
+  try {
+    // Use the backend API directly in server components
+    const apiBase =
+      process.env.NEXT_PUBLIC_API_BASE ||
+      process.env.API_BASE ||
+      "http://localhost:4000";
+    const res = await fetch(`${apiBase}/api/products/${id}`, {
       cache: "no-store",
-    })
-  );
-  const data = use(res.json());
-  const product = data?.item || null;
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return data?.item || null;
+    } else {
+      console.error("Backend API error:", res.status, res.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+    return null;
+  }
+}
+
+export default async function ProductDetailsPage({ params }) {
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
     return (
@@ -46,6 +58,9 @@ export default function ProductDetailsPage({ params }) {
     </div>
   );
 }
+
+// Mark as dynamic for proper SSR
+export const dynamic = "force-dynamic";
 
 // Pre-generate static routes for better perf and prefetch
 export function generateStaticParams() {
